@@ -278,6 +278,7 @@ function openLevel(levelId) {
   const selectedTrack = getTrackState();
   const level = selectedTrack.config.levels.find((item) => item.id === levelId);
   if (!level) return;
+  const isMath = selectedTrack.key === "math";
 
   activeLevel = level;
   welcomeCard.classList.add("hidden");
@@ -289,6 +290,8 @@ function openLevel(levelId) {
   stageTag.textContent = `${level.title} (${selectedTrack.config.label})`;
   starsPreview.textContent = "⭐ +1";
   questionText.textContent = level.prompt;
+  questionText.dir = isMath ? "ltr" : "rtl";
+  questionText.classList.toggle("math-text", isMath);
 
   answersContainer.innerHTML = "";
 
@@ -297,6 +300,8 @@ function openLevel(levelId) {
     answerBtn.type = "button";
     answerBtn.className = "answer-btn";
     answerBtn.textContent = option;
+    answerBtn.dir = isMath ? "ltr" : "rtl";
+    answerBtn.classList.toggle("math-answer", isMath);
     answerBtn.addEventListener("click", () => checkAnswer(index));
     answersContainer.appendChild(answerBtn);
   });

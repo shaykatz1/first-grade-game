@@ -205,6 +205,16 @@ h3 {
   background: #edf6ff;
 }
 
+.math-text {
+  direction: ltr;
+  text-align: left;
+}
+
+.math-answer {
+  direction: ltr;
+  text-align: left;
+}
+
 .feedback {
   min-height: 24px;
   font-weight: 600;
