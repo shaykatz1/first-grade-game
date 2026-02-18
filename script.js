@@ -1,93 +1,172 @@
-const languageLevels = [
-  { id: 1, title: "שָׂפָה 1", prompt: "אֵיזוֹ אוֹת פּוֹתַחַת אֶת 'בַּיִת'?", options: ["בּ", "מ", "שׁ"], correct: 0 },
-  { id: 2, title: "שָׂפָה 2", prompt: "אֵיזוֹ מִילָה הִיא חַיָּה?", options: ["כֶּלֶב", "כִּיסֵּא", "סֵפֶר"], correct: 0 },
-  { id: 3, title: "שָׂפָה 3", prompt: "אֵיזוֹ אוֹת סוֹגֶרֶת אֶת 'יָם'?", options: ["ם", "ן", "ת"], correct: 0 },
-  { id: 4, title: "שָׂפָה 4", prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-מ?", options: ["מַיִם", "דָּג", "סוּס"], correct: 0 },
-  { id: 5, title: "שָׂפָה 5", prompt: "אֵיזֶה זוּג חָרִיזִים?", options: ["כַּדּוּר-סִפּוּר", "שֻׁלְחָן-חָלוֹן", "כִּסֵּא-סֵפֶר"], correct: 0 },
-  { id: 6, title: "שָׂפָה 6", prompt: "אֵיזוֹ מִילָה נִכְתֶּבֶת נָכוֹן?", options: ["פֶּרַח", "פָּרַח", "פֶרַח"], correct: 0 },
-  { id: 7, title: "שָׂפָה 7", prompt: "מַה הַהֵפֶךְ שֶׁל 'גָּדוֹל'?", options: ["קָטָן", "רָחָב", "כָּבֵד"], correct: 0 },
-  { id: 8, title: "שָׂפָה 8", prompt: "אֵיזוֹ אוֹת בָּאָה אַחֲרֵי נ?", options: ["ס", "מ", "ר"], correct: 0 },
-  { id: 9, title: "שָׂפָה 9", prompt: "אֵיזוֹ מִילָה בְּרַבִּים?", options: ["יְלָדִים", "יֶלֶד", "יַלְדָּה"], correct: 0 },
-  { id: 10, title: "שָׂפָה 10", prompt: "אֵיזוֹ מִילָה קְשׁוּרָה לְבֵית סֵפֶר?", options: ["מַחְבֶּרֶת", "גְּלִידָה", "כַּפִּית"], correct: 0 },
-  { id: 11, title: "שָׂפָה 11", prompt: "אֵיזוֹ מִילָה הִיא פֹּעַל?", options: ["רוֹץ", "כִּסֵּא", "חָכָם"], correct: 0 },
-  { id: 12, title: "שָׂפָה 12", prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-ל?", options: ["לֶחֶם", "דֶּלֶת", "מִטָּה"], correct: 0 },
-  { id: 13, title: "שָׂפָה 13", prompt: "אֵיזוֹ מִילָה קְצָרָה יוֹתֵר?", options: ["דָּג", "מַחְבֶּרֶת", "מִטְבָּח"], correct: 0 },
-  { id: 14, title: "שָׂפָה 14", prompt: "אֵיזֶה מִשְׁפָּט נָכוֹן?", options: ["אֲנִי אוֹהֵב לִקְרוֹא.", "אֲנִי אוֹהֵב לִקְרֹו.", "אֲנִי לִקְרוֹא אוֹהֵב."], correct: 0 },
-  { id: 15, title: "שָׂפָה 15", prompt: "אֵיזוֹ אוֹת פּוֹתַחַת אֶת 'תַּפּוּחַ'?", options: ["תּ", "ד", "שׂ"], correct: 0 },
-  { id: 16, title: "שָׂפָה 16", prompt: "אֵיזוֹ מִילָה שַׁיֶּכֶת לַבַּיִת?", options: ["מִטָּה", "אוֹטוֹבּוּס", "תַּרְנְגוֹל"], correct: 0 },
-  { id: 17, title: "שָׂפָה 17", prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-שׁ?", options: ["שֶׁמֶשׁ", "חָלוֹן", "פֶּרַח"], correct: 0 },
-  { id: 18, title: "שָׂפָה 18", prompt: "אֵיזוֹ מִילָה הִיא שֵׁם צֶבַע?", options: ["יָרֹק", "יֶלֶד", "כִּסֵּא"], correct: 0 },
-  { id: 19, title: "שָׂפָה 19", prompt: "אֵיזוֹ מִילָה מְסַיֶּמֶת בְּ-ת?", options: ["דֶּלֶת", "סוּס", "תַּפּוּחַ"], correct: 0 },
-  { id: 20, title: "שָׂפָה 20", prompt: "אֵיזוֹ אוֹת פּוֹתַחַת אֶת 'סֵפֶר'?", options: ["ס", "ב", "כ"], correct: 0 },
-  { id: 21, title: "שָׂפָה 21", prompt: "אֵיזוֹ מִילָה הִיא מַאֲכָל?", options: ["לֶחֶם", "חָלוֹן", "עֵפֶר"], correct: 0 },
-  { id: 22, title: "שָׂפָה 22", prompt: "אֵיזֶה זוּג חָרִיזִים?", options: ["חוֹל-כֹּל", "כִּסֵּא-כַּפִּית", "סֵפֶר-שֻׁלְחָן"], correct: 0 },
-  { id: 23, title: "שָׂפָה 23", prompt: "אֵיזוֹ אוֹת בָּאָה אַחֲרֵי כ?", options: ["ל", "י", "מ"], correct: 0 },
-  { id: 24, title: "שָׂפָה 24", prompt: "אֵיזוֹ מִילָה הִיא שֵׁם חֵפֶץ?", options: ["כַּדּוּר", "רוֹץ", "גָּדוֹל"], correct: 0 },
-  { id: 25, title: "שָׂפָה 25", prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-ק?", options: ["קֶסֶם", "מֶלֶךְ", "סוּס"], correct: 0 },
-  { id: 26, title: "שָׂפָה 26", prompt: "אֵיזוֹ מִילָה בְּרַבִּים?", options: ["סְפָרִים", "סֵפֶר", "יֶלֶד"], correct: 0 },
-  { id: 27, title: "שָׂפָה 27", prompt: "אֵיזוֹ מִילָה קְשׁוּרָה לַגּוּף?", options: ["יָד", "סִיר", "כִּיסֵּא"], correct: 0 },
-  { id: 28, title: "שָׂפָה 28", prompt: "אֵיזוֹ אוֹת סוֹגֶרֶת אֶת 'דָּג'?", options: ["ג", "ד", "ב"], correct: 0 },
-  { id: 29, title: "שָׂפָה 29", prompt: "אֵיזוֹ מִילָה הִיא פֹּעַל?", options: ["אוֹכֵל", "אוֹכֶל", "אֹכֶלֶת"], correct: 0 },
-  { id: 30, title: "שָׂפָה 30", prompt: "אֵיזֶה מִשְׁפָּט נָכוֹן?", options: ["הַיֶּלֶד קוֹרֵא סֵפֶר.", "הַיֶּלֶד קוֹרֵה סֵפֶר.", "הַיֶּלֶד סֵפֶר קוֹרֵא."], correct: 0 },
-  { id: 31, title: "שָׂפָה 31", prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-ט?", options: ["טַוָּס", "לָוִיתָן", "זְמַן"], correct: 0 },
-  { id: 32, title: "שָׂפָה 32", prompt: "אֵיזוֹ מִילָה קְשׁוּרָה לַכִּתָּה?", options: ["לוּחַ", "מִזְרָק", "מַגֶּבֶת"], correct: 0 },
-  { id: 33, title: "שָׂפָה 33", prompt: "אֵיזוֹ אוֹת בָּאָה אַחֲרֵי ר?", options: ["שׁ", "ק", "ת"], correct: 0 },
-  { id: 34, title: "שָׂפָה 34", prompt: "אֵיזוֹ מִילָה הִיא שֵׁם חַיָּה?", options: ["צָב", "צַב", "צֶבַע"], correct: 0 },
-  { id: 35, title: "שָׂפָה 35", prompt: "אֵיזוֹ מִילָה מְסַיֶּמֶת בְּ-ם?", options: ["יָם", "יוֹם", "יָדוֹ"], correct: 0 }
+const languageQuestionBank = [
+  { prompt: "אֵיזוֹ אוֹת פּוֹתַחַת אֶת 'בַּיִת'?", options: ["בּ", "מ", "שׁ"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא חַיָּה?", options: ["כֶּלֶב", "כִּיסֵּא", "סֵפֶר"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת סוֹגֶרֶת אֶת 'יָם'?", options: ["ם", "ן", "ת"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-מ?", options: ["מַיִם", "דָּג", "סוּס"], correct: 0 },
+  { prompt: "אֵיזֶה זוּג הוּא חֲרוּזִים?", options: ["כַּדּוּר-סִפּוּר", "שֻׁלְחָן-חָלוֹן", "כִּסֵּא-סֵפֶר"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה נִכְתֶּבֶת נָכוֹן?", options: ["פֶּרַח", "פֶרַח", "פָּרֶח"], correct: 0 },
+  { prompt: "מַה הַהֵפֶךְ שֶׁל 'גָּדוֹל'?", options: ["קָטָן", "רָחָב", "יָקָר"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת בָּאָה אַחֲרֵי נ?", options: ["ס", "מ", "ר"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה בְּרַבִּים?", options: ["יְלָדִים", "יַלְדָּה", "יֶלֶד"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה קְשׁוּרָה לְבֵית סֵפֶר?", options: ["מַחְבֶּרֶת", "גְּלִידָה", "כַּר"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא פֹּעַל?", options: ["רוֹץ", "כִּסֵּא", "צָהֹב"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-ל?", options: ["לֶחֶם", "דֶּלֶת", "מִטָּה"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה קְצָרָה יוֹתֵר?", options: ["דָּג", "מַחְבֶּרֶת", "מִרְפֶּסֶת"], correct: 0 },
+  { prompt: "אֵיזֶה מִשְׁפָּט נָכוֹן?", options: ["אֲנִי אוֹהֵב לִקְרוֹא.", "אֲנִי אוֹהֵב לִקְרֹו.", "אֲנִי לִקְרוֹא אוֹהֵב."], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת פּוֹתַחַת אֶת 'תַּפּוּחַ'?", options: ["תּ", "ד", "שׂ"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה שַׁיֶּכֶת לַבַּיִת?", options: ["מִטָּה", "אוֹטוֹבּוּס", "כַּדּוּר"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-שׁ?", options: ["שֶׁמֶשׁ", "חָלוֹן", "פֶּרַח"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא שֵׁם צֶבַע?", options: ["יָרֹק", "יֶלֶד", "כִּסֵּא"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מְסַיֶּמֶת בְּ-ת?", options: ["דֶּלֶת", "סוּס", "תַּפּוּחַ"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת פּוֹתַחַת אֶת 'סֵפֶר'?", options: ["ס", "ב", "כ"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא מַאֲכָל?", options: ["לֶחֶם", "חָלוֹן", "כַּף"], correct: 0 },
+  { prompt: "אֵיזֶה זוּג הוּא חֲרוּזִים?", options: ["חוֹל-כֹּל", "כִּסֵּא-כַּפִּית", "סֵפֶר-שֻׁלְחָן"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת בָּאָה אַחֲרֵי כ?", options: ["ל", "י", "מ"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא שֵׁם חֵפֶץ?", options: ["כַּדּוּר", "רוֹץ", "נָעִים"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-ק?", options: ["קֶסֶם", "מֶלֶךְ", "סוּס"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה בְּרַבִּים?", options: ["סְפָרִים", "סֵפֶר", "שֻׁלְחָן"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה קְשׁוּרָה לַגּוּף?", options: ["יָד", "סִיר", "כִּסֵּא"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת סוֹגֶרֶת אֶת 'דָּג'?", options: ["ג", "ד", "ב"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא פֹּעַל?", options: ["אוֹכֵל", "אוֹכֶל", "אֹכֶלֶת"], correct: 0 },
+  { prompt: "אֵיזֶה מִשְׁפָּט נָכוֹן?", options: ["הַיֶּלֶד קוֹרֵא סֵפֶר.", "הַיֶּלֶד קוֹרֵה סֵפֶר.", "הַיֶּלֶד סֵפֶר קוֹרֵא."], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-ט?", options: ["טַוָּס", "לָוִיתָן", "זְמַן"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה קְשׁוּרָה לַכִּתָּה?", options: ["לוּחַ", "מִזְרָק", "מַגֶּבֶת"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת בָּאָה אַחֲרֵי ר?", options: ["שׁ", "ק", "ת"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא שֵׁם חַיָּה?", options: ["צָב", "צֶבַע", "צַו"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מְסַיֶּמֶת בְּ-ם?", options: ["יָם", "יוֹם", "יָדוֹ"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת פּוֹתַחַת אֶת 'חָלוֹן'?", options: ["ח", "כ", "ה"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מַתְאִימָה לְחוֹרֶף?", options: ["מַעִיל", "כַּפָּכִים", "מַאוֹוֵר"], correct: 0 },
+  { prompt: "אֵיזֶה זוּג הוּא חֲרוּזִים?", options: ["שִׁיר-עִיר", "סֵפֶר-שֻׁלְחָן", "דֶּלֶת-חָלוֹן"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה בְּרַבִּים?", options: ["כּוֹבָעִים", "כּוֹבַע", "כֻּבָּה"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת סוֹגֶרֶת אֶת 'אוֹר'?", options: ["ר", "ו", "ן"], correct: 0 },
+  { prompt: "מַה הַהֵפֶךְ שֶׁל 'קַר'?", options: ["חַם", "רָטוֹב", "יָבֵשׁ"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא מָקוֹם?", options: ["גַּן", "רוֹץ", "אָדֹם"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת בָּאָה אַחֲרֵי ד?", options: ["ה", "ו", "ג"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-א?", options: ["אֲרִי", "לֵב", "מֶלֶךְ"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא פֹּעַל?", options: ["קוֹפֵץ", "כִּסֵּא", "קָטָן"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה נִכְתֶּבֶת נָכוֹן?", options: ["חֲבֵר", "חָבֵרָ", "חֶבֶר"], correct: 0 },
+  { prompt: "אֵיזֶה מִשְׁפָּט נָכוֹן?", options: ["הַיַּלְדָּה שָׁרָה.", "הַיַּלְדָּה שָׁרֶה.", "שָׁרָה הַיַּלְדָּה."], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה קְשׁוּרָה לַיָּם?", options: ["סִירָה", "מַחְבֶּרֶת", "מִזְרָק"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת סוֹגֶרֶת אֶת 'כַּף'?", options: ["ף", "כ", "ת"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה בְּרַבִּים?", options: ["חֲתוּלִים", "חָתוּל", "חֲתוּלָה"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מַתְחִילָה בְּ-ג?", options: ["גִּינָה", "תָּמָר", "סוּס"], correct: 0 },
+  { prompt: "אֵיזֶה זוּג הוּא חֲרוּזִים?", options: ["בַּיִת-זַיִת", "סֵפֶר-חֶדֶר", "חָלוֹן-שֻׁלְחָן"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה הִיא שֵׁם צֶבַע?", options: ["כָּתוֹם", "כַּדּוּר", "קוֹפֵץ"], correct: 0 },
+  { prompt: "מַה הַהֵפֶךְ שֶׁל 'מַהֵר'?", options: ["לָאַט", "גָּבוֹהַּ", "חַזָּק"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת בָּאָה אַחֲרֵי פ?", options: ["צ", "ע", "ק"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה שַׁיֶּכֶת לַמִּטְבָּח?", options: ["כַּפִּית", "עִפָּרוֹן", "כַּדּוּר"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה נִכְתֶּבֶת נָכוֹן?", options: ["שָׁלוֹם", "שָׁלוֹמ", "שָׁלֹם"], correct: 0 },
+  { prompt: "אֵיזֶה מִשְׁפָּט נָכוֹן?", options: ["אֲנַחְנוּ הוֹלְכִים לַגַּן.", "אֲנַחְנוּ הוֹלֵךְ לַגַּן.", "אֲנַחְנוּ לַגַּן הוֹלְכִים."], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה מְסַיֶּמֶת בְּ-ן?", options: ["עִפָּרוֹן", "סֵפֶר", "יָד"], correct: 0 },
+  { prompt: "אֵיזוֹ אוֹת פּוֹתַחַת אֶת 'זֶרַע'?", options: ["ז", "ר", "ס"], correct: 0 },
+  { prompt: "אֵיזוֹ מִילָה קְשׁוּרָה לְגִנָּה?", options: ["עֵץ", "מַחְשֵׁב", "סַפָּה"], correct: 0 }
 ];
 
-const mathLevels = [
-  { id: 1, title: "חֶשְׁבּוֹן 1", prompt: "1 + 1 = ?", options: ["1", "2", "3"], correct: 1 },
-  { id: 2, title: "חֶשְׁבּוֹן 2", prompt: "🍎🍎🍎 = ?", options: ["2", "3", "4"], correct: 1 },
-  { id: 3, title: "חֶשְׁבּוֹן 3", prompt: "5 - 2 = ?", options: ["2", "3", "4"], correct: 1 },
-  { id: 4, title: "חֶשְׁבּוֹן 4", prompt: "אֵיזֶה גָּדוֹל יוֹתֵר?", options: ["7", "4", "3"], correct: 0 },
-  { id: 5, title: "חֶשְׁבּוֹן 5", prompt: "3 + 4 = ?", options: ["6", "7", "8"], correct: 1 },
-  { id: 6, title: "חֶשְׁבּוֹן 6", prompt: "10 - 1 = ?", options: ["8", "9", "10"], correct: 1 },
-  { id: 7, title: "חֶשְׁבּוֹן 7", prompt: "2, 4, 6, ...", options: ["7", "8", "9"], correct: 1 },
-  { id: 8, title: "חֶשְׁבּוֹן 8", prompt: "2 + 2 + 2 = ?", options: ["4", "5", "6"], correct: 2 },
-  { id: 9, title: "חֶשְׁבּוֹן 9", prompt: "🔺🔺🔺🔺 = ?", options: ["3", "4", "5"], correct: 1 },
-  { id: 10, title: "חֶשְׁבּוֹן 10", prompt: "9 - 4 = ?", options: ["4", "5", "6"], correct: 1 },
-  { id: 11, title: "חֶשְׁבּוֹן 11", prompt: "6 + 3 = ?", options: ["8", "9", "10"], correct: 1 },
-  { id: 12, title: "חֶשְׁבּוֹן 12", prompt: "8 + 2 = ?", options: ["9", "10", "11"], correct: 1 },
-  { id: 13, title: "חֶשְׁבּוֹן 13", prompt: "🟡🟡 + 🟡 = ?", options: ["2", "3", "4"], correct: 1 },
-  { id: 14, title: "חֶשְׁבּוֹן 14", prompt: "7 - 3 = ?", options: ["3", "4", "5"], correct: 1 },
-  { id: 15, title: "חֶשְׁבּוֹן 15", prompt: "אֵיזֶה קָטָן יוֹתֵר?", options: ["2", "5", "9"], correct: 0 },
-  { id: 16, title: "חֶשְׁבּוֹן 16", prompt: "4 + 4 = ?", options: ["7", "8", "9"], correct: 1 },
-  { id: 17, title: "חֶשְׁבּוֹן 17", prompt: "👟👟👟👟👟 = ?", options: ["4", "5", "6"], correct: 1 },
-  { id: 18, title: "חֶשְׁבּוֹן 18", prompt: "12 - 2 = ?", options: ["9", "10", "11"], correct: 1 },
-  { id: 19, title: "חֶשְׁבּוֹן 19", prompt: "5 + 5 = ?", options: ["9", "10", "11"], correct: 1 },
-  { id: 20, title: "חֶשְׁבּוֹן 20", prompt: "3 + 6 = ?", options: ["8", "9", "10"], correct: 1 },
-  { id: 21, title: "חֶשְׁבּוֹן 21", prompt: "⚽⚽⚽⚽⚽⚽ = ?", options: ["5", "6", "7"], correct: 1 },
-  { id: 22, title: "חֶשְׁבּוֹן 22", prompt: "11 - 1 = ?", options: ["9", "10", "11"], correct: 1 },
-  { id: 23, title: "חֶשְׁבּוֹן 23", prompt: "2 + 5 = ?", options: ["6", "7", "8"], correct: 1 },
-  { id: 24, title: "חֶשְׁבּוֹן 24", prompt: "אֵיזֶה גָּדוֹל יוֹתֵר?", options: ["12", "9", "6"], correct: 0 },
-  { id: 25, title: "חֶשְׁבּוֹן 25", prompt: "14 - 4 = ?", options: ["9", "10", "11"], correct: 1 },
-  { id: 26, title: "חֶשְׁבּוֹן 26", prompt: "🍓🍓 + 🍓🍓 = ?", options: ["3", "4", "5"], correct: 1 },
-  { id: 27, title: "חֶשְׁבּוֹן 27", prompt: "7 + 2 = ?", options: ["8", "9", "10"], correct: 1 },
-  { id: 28, title: "חֶשְׁבּוֹן 28", prompt: "15 - 5 = ?", options: ["9", "10", "11"], correct: 1 },
-  { id: 29, title: "חֶשְׁבּוֹן 29", prompt: "🟦🟦🟦 = ?", options: ["2", "3", "4"], correct: 1 },
-  { id: 30, title: "חֶשְׁבּוֹן 30", prompt: "8 + 4 = ?", options: ["11", "12", "13"], correct: 1 },
-  { id: 31, title: "חֶשְׁבּוֹן 31", prompt: "13 - 3 = ?", options: ["9", "10", "11"], correct: 1 },
-  { id: 32, title: "חֶשְׁבּוֹן 32", prompt: "4 + 5 = ?", options: ["8", "9", "10"], correct: 1 },
-  { id: 33, title: "חֶשְׁבּוֹן 33", prompt: "אֵיזֶה קָטָן יוֹתֵר?", options: ["6", "8", "10"], correct: 0 },
-  { id: 34, title: "חֶשְׁבּוֹן 34", prompt: "16 - 6 = ?", options: ["9", "10", "11"], correct: 1 },
-  { id: 35, title: "חֶשְׁבּוֹן 35", prompt: "9 + 1 = ?", options: ["9", "10", "11"], correct: 1 }
+const visualMathQuestions = [
+  { prompt: "🍎🍎🍎 = ?", options: ["2", "3", "4"], correct: 1 },
+  { prompt: "🔺🔺🔺🔺 = ?", options: ["3", "4", "5"], correct: 1 },
+  { prompt: "⚽⚽⚽⚽⚽⚽ = ?", options: ["5", "6", "7"], correct: 1 },
+  { prompt: "🟡🟡 + 🟡 = ?", options: ["2", "3", "4"], correct: 1 },
+  { prompt: "👟👟👟👟👟 = ?", options: ["4", "5", "6"], correct: 1 },
+  { prompt: "🍓🍓 + 🍓🍓 = ?", options: ["3", "4", "5"], correct: 1 },
+  { prompt: "🟦🟦🟦 = ?", options: ["2", "3", "4"], correct: 1 },
+  { prompt: "🍌🍌🍌🍌🍌🍌🍌 = ?", options: ["6", "7", "8"], correct: 1 },
+  { prompt: "⭐ + ⭐ + ⭐ = ?", options: ["2", "3", "4"], correct: 1 },
+  { prompt: "🧁🧁🧁🧁 = ?", options: ["3", "4", "5"], correct: 1 },
+  { prompt: "🍒🍒 + 🍒 = ?", options: ["2", "3", "4"], correct: 1 },
+  { prompt: "🧩🧩🧩🧩🧩 = ?", options: ["4", "5", "6"], correct: 1 },
+  { prompt: "🔵🔵🔵🔵🔵🔵🔵🔵 = ?", options: ["7", "8", "9"], correct: 1 },
+  { prompt: "🍪🍪 + 🍪🍪 + 🍪 = ?", options: ["4", "5", "6"], correct: 1 },
+  { prompt: "🧸🧸🧸 = ?", options: ["2", "3", "4"], correct: 1 },
+  { prompt: "🚗🚗🚗🚗🚗🚗 = ?", options: ["5", "6", "7"], correct: 1 },
+  { prompt: "🟩🟩 + 🟩🟩🟩 = ?", options: ["4", "5", "6"], correct: 1 },
+  { prompt: "🥕🥕🥕🥕🥕 = ?", options: ["4", "5", "6"], correct: 1 },
+  { prompt: "🍍🍍 + 🍍 = ?", options: ["2", "3", "4"], correct: 1 },
+  { prompt: "🎈🎈🎈🎈🎈🎈🎈🎈🎈 = ?", options: ["8", "9", "10"], correct: 1 }
 ];
+
+function buildMathQuestion(a, b, op) {
+  const answer = op === "+" ? a + b : a - b;
+  const options = createNumberOptions(answer);
+  return {
+    prompt: `${a} ${op} ${b} = ?`,
+    options: options.map(String),
+    correct: options.indexOf(answer)
+  };
+}
+
+function createNumberOptions(answer) {
+  const min = Math.max(0, answer - 2);
+  const max = answer + 2;
+  const set = new Set([answer]);
+
+  for (let value = min; value <= max; value += 1) {
+    if (set.size >= 3) break;
+    if (value !== answer) set.add(value);
+  }
+
+  let candidate = answer + 3;
+  while (set.size < 3) {
+    set.add(candidate);
+    candidate += 1;
+  }
+
+  return Array.from(set).slice(0, 3);
+}
+
+function buildMathBank() {
+  const bank = [...visualMathQuestions];
+
+  const additions = [
+    [1, 1], [2, 2], [3, 4], [4, 4], [5, 3], [6, 3], [7, 2], [8, 2], [9, 1], [5, 5],
+    [2, 5], [4, 5], [3, 6], [7, 3], [8, 4], [9, 2], [6, 6], [10, 2], [7, 4], [3, 7]
+  ];
+
+  const subtractions = [
+    [5, 2], [7, 3], [9, 4], [10, 1], [11, 1], [12, 2], [14, 4], [15, 5], [13, 3], [16, 6],
+    [8, 3], [6, 2], [10, 3], [12, 5], [9, 3], [17, 7], [18, 8], [20, 10], [11, 4], [19, 9]
+  ];
+
+  additions.forEach(([a, b]) => {
+    bank.push(buildMathQuestion(a, b, "+"));
+  });
+
+  subtractions.forEach(([a, b]) => {
+    bank.push(buildMathQuestion(a, b, "-"));
+  });
+
+  return bank;
+}
+
+const mathQuestionBank = buildMathBank();
+
+function chunkQuestionsToStages(questions, trackLabel, stageSize = 6) {
+  const stages = [];
+  for (let i = 0; i < questions.length; i += stageSize) {
+    const stageId = Math.floor(i / stageSize) + 1;
+    stages.push({
+      id: stageId,
+      title: `${trackLabel} ${stageId}`,
+      questions: questions.slice(i, i + stageSize)
+    });
+  }
+  return stages;
+}
 
 const tracks = {
   language: {
     label: "שָׂפָה",
     levelLabel: "שַׁלְבֵי שָׂפָה",
-    levels: languageLevels
+    stages: chunkQuestionsToStages(languageQuestionBank, "שָׂפָה")
   },
   math: {
     label: "חֶשְׁבּוֹן",
     levelLabel: "שַׁלְבֵי חֶשְׁבּוֹן",
-    levels: mathLevels
+    stages: chunkQuestionsToStages(mathQuestionBank, "חֶשְׁבּוֹן")
   }
 };
 
-const storageKey = "first-grade-progress-v3";
+const storageKey = "first-grade-progress-v4";
 
 const levelsTitle = document.getElementById("levelsTitle");
 const levelsContainer = document.getElementById("levelsContainer");
@@ -113,14 +192,18 @@ const milestoneTitle = document.getElementById("milestoneTitle");
 const milestoneText = document.getElementById("milestoneText");
 const closeMilestoneBtn = document.getElementById("closeMilestoneBtn");
 
+const defaultTrackProgress = { completedStages: [], completedQuestions: [], stars: 0, correctAnswers: 0 };
+
 const defaultProgress = {
   selectedTrack: null,
-  language: { unlockedLevel: 1, completed: [], stars: 0, correctAnswers: 0 },
-  math: { unlockedLevel: 1, completed: [], stars: 0, correctAnswers: 0 }
+  language: { ...defaultTrackProgress },
+  math: { ...defaultTrackProgress }
 };
 
 let progress = loadProgress();
-let activeLevel = null;
+let activeStage = null;
+let activeQuestionIndex = 0;
+let stageCorrectThisRun = 0;
 
 bindEvents();
 render();
@@ -129,27 +212,16 @@ renderTrackOverlay();
 function bindEvents() {
   chooseLanguageBtn.addEventListener("click", () => selectTrack("language"));
   chooseMathBtn.addEventListener("click", () => selectTrack("math"));
-  changeTrackBtn.addEventListener("click", () => openTrackChooser());
+  changeTrackBtn.addEventListener("click", openTrackChooser);
 
-  nextBtn.addEventListener("click", () => {
-    if (!activeLevel) return;
-
-    const selectedTrack = getTrackState();
-    const nextId = activeLevel.id + 1;
-    if (nextId <= selectedTrack.data.unlockedLevel && nextId <= selectedTrack.config.levels.length) {
-      openLevel(nextId);
-      return;
-    }
-
-    activeLevel = null;
-    welcomeCard.classList.remove("hidden");
-    questionCard.classList.add("hidden");
-  });
+  nextBtn.classList.add("hidden");
 
   resetProgressBtn.addEventListener("click", () => {
     progress = cloneDefaultProgress();
     saveProgress();
-    activeLevel = null;
+    activeStage = null;
+    activeQuestionIndex = 0;
+    stageCorrectThisRun = 0;
     questionCard.classList.add("hidden");
     welcomeCard.classList.remove("hidden");
     render();
@@ -163,9 +235,19 @@ function bindEvents() {
 
 function cloneDefaultProgress() {
   return {
-    selectedTrack: defaultProgress.selectedTrack,
-    language: { ...defaultProgress.language, completed: [...defaultProgress.language.completed] },
-    math: { ...defaultProgress.math, completed: [...defaultProgress.math.completed] }
+    selectedTrack: null,
+    language: { completedStages: [], completedQuestions: [], stars: 0, correctAnswers: 0 },
+    math: { completedStages: [], completedQuestions: [], stars: 0, correctAnswers: 0 }
+  };
+}
+
+function normalizeTrackProgress(value) {
+  if (!value || typeof value !== "object") return { ...defaultTrackProgress };
+  return {
+    completedStages: Array.isArray(value.completedStages) ? value.completedStages.filter((id) => Number.isInteger(id) && id > 0) : [],
+    completedQuestions: Array.isArray(value.completedQuestions) ? value.completedQuestions.filter((key) => typeof key === "string") : [],
+    stars: Number.isFinite(value.stars) ? value.stars : 0,
+    correctAnswers: Number.isFinite(value.correctAnswers) ? value.correctAnswers : 0
   };
 }
 
@@ -175,30 +257,14 @@ function loadProgress() {
 
   try {
     const parsed = JSON.parse(raw);
-    return normalizeProgress(parsed);
+    return {
+      selectedTrack: parsed.selectedTrack === "language" || parsed.selectedTrack === "math" ? parsed.selectedTrack : null,
+      language: normalizeTrackProgress(parsed.language),
+      math: normalizeTrackProgress(parsed.math)
+    };
   } catch {
     return cloneDefaultProgress();
   }
-}
-
-function normalizeProgress(parsed) {
-  return {
-    selectedTrack: parsed.selectedTrack === "language" || parsed.selectedTrack === "math" ? parsed.selectedTrack : null,
-    language: normalizeTrackProgress(parsed.language),
-    math: normalizeTrackProgress(parsed.math)
-  };
-}
-
-function normalizeTrackProgress(value) {
-  const fallback = { unlockedLevel: 1, completed: [], stars: 0, correctAnswers: 0 };
-  if (!value || typeof value !== "object") return { ...fallback };
-
-  return {
-    unlockedLevel: Number.isInteger(value.unlockedLevel) && value.unlockedLevel > 0 ? value.unlockedLevel : 1,
-    completed: Array.isArray(value.completed) ? value.completed.filter((id) => Number.isInteger(id) && id > 0) : [],
-    stars: Number.isFinite(value.stars) ? value.stars : 0,
-    correctAnswers: Number.isFinite(value.correctAnswers) ? value.correctAnswers : 0
-  };
 }
 
 function saveProgress() {
@@ -207,170 +273,196 @@ function saveProgress() {
 
 function getTrackState() {
   const key = progress.selectedTrack || "language";
-  return {
-    key,
-    config: tracks[key],
-    data: progress[key]
-  };
-}
-
-function openTrackChooser() {
-  trackChooser.classList.add("open");
-  activeLevel = null;
-  questionCard.classList.add("hidden");
-  welcomeCard.classList.remove("hidden");
-}
-
-function selectTrack(trackKey) {
-  progress.selectedTrack = trackKey;
-  saveProgress();
-  trackChooser.classList.remove("open");
-  activeLevel = null;
-  questionCard.classList.add("hidden");
-  welcomeCard.classList.remove("hidden");
-  render();
+  return { key, config: tracks[key], data: progress[key] };
 }
 
 function renderTrackOverlay() {
   trackChooser.classList.toggle("open", !progress.selectedTrack);
 }
 
+function openTrackChooser() {
+  activeStage = null;
+  activeQuestionIndex = 0;
+  stageCorrectThisRun = 0;
+  questionCard.classList.add("hidden");
+  welcomeCard.classList.remove("hidden");
+  trackChooser.classList.add("open");
+}
+
+function selectTrack(trackKey) {
+  progress.selectedTrack = trackKey;
+  saveProgress();
+  activeStage = null;
+  activeQuestionIndex = 0;
+  stageCorrectThisRun = 0;
+  questionCard.classList.add("hidden");
+  welcomeCard.classList.remove("hidden");
+  trackChooser.classList.remove("open");
+  render();
+}
+
 function render() {
   renderStats();
-  renderLevels();
+  renderStages();
 }
 
 function renderStats() {
   const selectedTrack = getTrackState();
-  const maxLevel = selectedTrack.config.levels.length;
   starsCount.textContent = String(selectedTrack.data.stars);
-  unlockedCount.textContent = String(Math.min(selectedTrack.data.unlockedLevel, maxLevel));
+  unlockedCount.textContent = String(selectedTrack.data.completedStages.length);
   correctCount.textContent = String(selectedTrack.data.correctAnswers);
 }
 
-function renderLevels() {
+function renderStages() {
   const selectedTrack = getTrackState();
   levelsTitle.textContent = selectedTrack.config.levelLabel;
   levelsContainer.innerHTML = "";
 
-  selectedTrack.config.levels.forEach((level) => {
-    const isUnlocked = level.id <= selectedTrack.data.unlockedLevel;
-    const isDone = selectedTrack.data.completed.includes(level.id);
+  selectedTrack.config.stages.forEach((stage) => {
+    const isDone = selectedTrack.data.completedStages.includes(stage.id);
 
     const button = document.createElement("button");
     button.type = "button";
     button.className = [
       "level-btn",
       selectedTrack.key === "language" ? "level-language" : "level-math",
-      isUnlocked ? "" : "level-locked",
       isDone ? "level-done" : ""
     ].join(" ").trim();
 
-    const stateLabel = !isUnlocked ? "נָעוּל" : isDone ? "הֻשְׁלַם" : "פָּתוּחַ";
-    button.textContent = `${level.title} • ${stateLabel}`;
-    button.disabled = !isUnlocked;
-    button.addEventListener("click", () => openLevel(level.id));
+    const stateLabel = isDone ? "הֻשְׁלַם" : "לְתִרְגּוּל";
+    button.textContent = `${stage.title} • ${stateLabel}`;
+    button.addEventListener("click", () => openStage(stage.id));
     levelsContainer.appendChild(button);
   });
 }
 
-function openLevel(levelId) {
+function openStage(stageId) {
   const selectedTrack = getTrackState();
-  const level = selectedTrack.config.levels.find((item) => item.id === levelId);
-  if (!level) return;
-  const isMath = selectedTrack.key === "math";
+  const stage = selectedTrack.config.stages.find((item) => item.id === stageId);
+  if (!stage) return;
 
-  activeLevel = level;
+  activeStage = stage;
+  activeQuestionIndex = 0;
+  stageCorrectThisRun = 0;
   welcomeCard.classList.add("hidden");
   questionCard.classList.remove("hidden");
-  feedback.textContent = "";
-  feedback.className = "feedback";
-  nextBtn.classList.add("hidden");
+  renderQuestion();
+}
 
-  stageTag.textContent = `${level.title} (${selectedTrack.config.label})`;
-  starsPreview.textContent = "⭐ +1";
-  questionText.textContent = level.prompt;
+function renderQuestion() {
+  if (!activeStage) return;
+
+  const selectedTrack = getTrackState();
+  const isMath = selectedTrack.key === "math";
+  const question = activeStage.questions[activeQuestionIndex];
+  if (!question) return;
+
+  stageTag.textContent = `${activeStage.title} (${selectedTrack.config.label})`;
+  starsPreview.textContent = `שְׁאֵלָה ${activeQuestionIndex + 1}/${activeStage.questions.length}`;
+  questionText.textContent = question.prompt;
   questionText.dir = isMath ? "ltr" : "rtl";
   questionText.classList.toggle("math-text", isMath);
 
+  feedback.textContent = "";
+  feedback.className = "feedback";
   answersContainer.innerHTML = "";
 
-  level.options.forEach((option, index) => {
+  question.options.forEach((option, index) => {
     const answerBtn = document.createElement("button");
     answerBtn.type = "button";
     answerBtn.className = "answer-btn";
     answerBtn.textContent = option;
     answerBtn.dir = isMath ? "ltr" : "rtl";
     answerBtn.classList.toggle("math-answer", isMath);
-    answerBtn.addEventListener("click", () => checkAnswer(index));
+    answerBtn.addEventListener("click", () => handleAnswer(index));
     answersContainer.appendChild(answerBtn);
   });
 }
 
-function checkAnswer(index) {
-  if (!activeLevel) return;
+function handleAnswer(index) {
+  if (!activeStage) return;
 
   const selectedTrack = getTrackState();
-  const currentLevelId = activeLevel.id;
+  const question = activeStage.questions[activeQuestionIndex];
   const buttons = Array.from(document.querySelectorAll(".answer-btn"));
   buttons.forEach((btn) => {
     btn.disabled = true;
   });
 
-  const correctAnswer = activeLevel.options[activeLevel.correct];
+  const questionKey = `${activeStage.id}-${activeQuestionIndex}`;
+  const isFirstQuestionSolve = !selectedTrack.data.completedQuestions.includes(questionKey);
 
-  if (index === activeLevel.correct) {
-    const firstCompletion = !selectedTrack.data.completed.includes(activeLevel.id);
-
-    feedback.textContent = "כָּל הַכָּבוֹד! תְּשׁוּבָה נְכוֹנָה! מַמְשִׁיכִים...";
+  if (index === question.correct) {
+    feedback.textContent = "כָּל הַכָּבוֹד! מַמְשִׁיכִים...";
     feedback.classList.add("ok");
     showBurst(false);
+    stageCorrectThisRun += 1;
 
-    if (firstCompletion) {
-      selectedTrack.data.completed.push(activeLevel.id);
+    if (isFirstQuestionSolve) {
+      selectedTrack.data.completedQuestions.push(questionKey);
       selectedTrack.data.stars += 1;
       selectedTrack.data.correctAnswers += 1;
-
-      if (selectedTrack.data.unlockedLevel <= activeLevel.id && selectedTrack.data.unlockedLevel < selectedTrack.config.levels.length) {
-        selectedTrack.data.unlockedLevel = activeLevel.id + 1;
-      }
-
-      if (activeLevel.id % 5 === 0) {
-        showBurst(true);
-        showMilestone(selectedTrack.config.label, activeLevel.id);
-      }
     }
+  } else {
+    const correctAnswer = question.options[question.correct];
+    feedback.textContent = `נִסָּיוֹן יָפֶה. הַתְּשׁוּבָה הַנְּכוֹנָה: ${correctAnswer}`;
+    feedback.classList.add("no");
+  }
 
-    saveProgress();
-    render();
-    queueAutoNext(currentLevelId);
+  saveProgress();
+  renderStats();
+
+  setTimeout(() => {
+    goToNextQuestion();
+  }, 1000);
+}
+
+function goToNextQuestion() {
+  if (!activeStage) return;
+
+  activeQuestionIndex += 1;
+
+  if (activeQuestionIndex < activeStage.questions.length) {
+    renderQuestion();
     return;
   }
 
-  feedback.textContent = `נִסָּיוֹן יָפֶה. הַתְּשׁוּבָה הַנְּכוֹנָה הִיא: ${correctAnswer}`;
-  feedback.classList.add("no");
-
-  setTimeout(() => {
-    buttons.forEach((btn) => {
-      btn.disabled = false;
-    });
-  }, 700);
+  finishStage();
 }
 
-function queueAutoNext(currentLevelId) {
+function finishStage() {
+  if (!activeStage) return;
+
+  const selectedTrack = getTrackState();
+  const wasCompleted = selectedTrack.data.completedStages.includes(activeStage.id);
+
+  if (!wasCompleted) {
+    selectedTrack.data.completedStages.push(activeStage.id);
+    selectedTrack.data.completedStages.sort((a, b) => a - b);
+    selectedTrack.data.stars += 3;
+  }
+
+  const correctText = `${stageCorrectThisRun}/${activeStage.questions.length}`;
+  feedback.textContent = `הַשָּׁלָב הֻשְׁלַם! תְּשׁוּבוֹת נְכוֹנוֹת בַּשָּׁלָב: ${correctText}`;
+  feedback.className = "feedback ok";
+
+  if (activeStage.id % 3 === 0) {
+    showBurst(true);
+    showMilestone(selectedTrack.config.label, activeStage.id, correctText);
+  } else {
+    showBurst(false);
+  }
+
+  saveProgress();
+  render();
+
   setTimeout(() => {
-    const selectedTrack = getTrackState();
-    const nextId = currentLevelId + 1;
-
-    if (nextId <= selectedTrack.data.unlockedLevel && nextId <= selectedTrack.config.levels.length) {
-      openLevel(nextId);
-      return;
-    }
-
-    activeLevel = null;
+    activeStage = null;
+    activeQuestionIndex = 0;
+    stageCorrectThisRun = 0;
     questionCard.classList.add("hidden");
     welcomeCard.classList.remove("hidden");
-  }, 1000);
+  }, 1300);
 }
 
 function showBurst(isBig) {
@@ -380,11 +472,11 @@ function showBurst(isBig) {
   }, isBig ? 1500 : 900);
 }
 
-function showMilestone(trackLabel, levelId) {
+function showMilestone(trackLabel, stageId, correctText) {
   milestoneTitle.textContent = "הִשָּׂג גָּדוֹל!";
-  milestoneText.textContent = `סִיַּמְתָּ ${levelId} שְׁלָבִים בְּ${trackLabel}. מַמָּשׁ אַלּוּף!`;
+  milestoneText.textContent = `סִיַּמְתָּ אֶת שָׁלָב ${stageId} בְּ${trackLabel}. תּוֹצָאָה: ${correctText}.`;
   milestoneModal.classList.add("open");
   setTimeout(() => {
     milestoneModal.classList.remove("open");
-  }, 1500);
+  }, 1600);
 }
