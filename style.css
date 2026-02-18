@@ -8,6 +8,7 @@
   --card: #ffffff;
   --muted: #62707f;
   --lock: #cfd6dc;
+  --track: #eaf0f7;
 }
 
 * {
@@ -81,7 +82,8 @@ body {
   box-shadow: 0 10px 20px rgba(36, 52, 71, 0.09);
 }
 
-h2 {
+h2,
+h3 {
   margin-top: 0;
 }
 
@@ -115,6 +117,30 @@ h2 {
   margin-top: 14px;
   background: #eef3f8;
   color: var(--ink);
+}
+
+.track-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.track-btn {
+  border: 1px solid #d8e2ec;
+  background: var(--track);
+  color: var(--ink);
+  border-radius: 12px;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.track-btn.active {
+  background: var(--accent);
+  border-color: var(--accent-dark);
+  color: #fff;
 }
 
 .levels-grid {

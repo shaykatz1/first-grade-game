@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>עולם הלמידה של כיתה א׳</title>
+  <title>עוֹלַם הַלְּמִידָה שֶׁל כִּתָּה א׳</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">
@@ -14,39 +14,44 @@
   <div class="background-shape shape-2"></div>
 
   <header class="app-header">
-    <h1>עולם הלמידה של כיתה א׳</h1>
-    <p>משחק חכם ללימוד שפה וחשבון, שלב אחרי שלב.</p>
+    <h1>עוֹלַם הַלְּמִידָה שֶׁל כִּתָּה א׳</h1>
+    <p>מִשְׂחָק לְשָׂפָה וְחֶשְׁבּוֹן, שָׁלָב אַחַר שָׁלָב.</p>
   </header>
 
   <main class="layout">
     <section class="stats-panel">
-      <h2>ההתקדמות שלי</h2>
+      <h2>הַהִתְקַדְּמוּת שֶׁלִּי</h2>
       <div class="stats-grid">
         <div class="stat-card">
-          <span>כוכבים</span>
+          <span>כּוֹכָבִים</span>
           <strong id="starsCount">0</strong>
         </div>
         <div class="stat-card">
-          <span>שלבים פתוחים</span>
-          <strong id="unlockedCount">2</strong>
+          <span>שְׁלָבִים פְּתוּחִים</span>
+          <strong id="unlockedCount">1</strong>
         </div>
         <div class="stat-card">
-          <span>תשובות נכונות</span>
+          <span>תְּשׁוּבוֹת נְכוֹנוֹת</span>
           <strong id="correctCount">0</strong>
         </div>
       </div>
-      <button id="resetProgressBtn" class="ghost-btn" type="button">איפוס התקדמות</button>
+      <button id="resetProgressBtn" class="ghost-btn" type="button">אִפּוּס הִתְקַדְּמוּת</button>
     </section>
 
     <section class="levels-panel">
-      <h2>בחרו שלב</h2>
+      <h2>בּוֹחֲרִים נוֹשֵׂא</h2>
+      <div class="track-switch" role="tablist" aria-label="בְּחִירַת נוֹשֵׂא">
+        <button id="trackLanguageBtn" class="track-btn active" type="button">שָׂפָה</button>
+        <button id="trackMathBtn" class="track-btn" type="button">חֶשְׁבּוֹן</button>
+      </div>
+      <h3 id="levelsTitle">שַׁלְבֵי שָׂפָה</h3>
       <div id="levelsContainer" class="levels-grid"></div>
     </section>
 
     <section class="game-panel">
       <div id="welcomeCard" class="card">
-        <h2>ברוכים הבאים</h2>
-        <p>בחרו שלב כדי להתחיל. כל שלב שתסיימו פותח שלב חדש!</p>
+        <h2>בְּרוּכִים הַבָּאִים</h2>
+        <p>בְּחֲרוּ נוֹשֵׂא וְשָׁלָב לְהַתְחָלָה.</p>
       </div>
 
       <div id="questionCard" class="card hidden">
@@ -57,13 +62,13 @@
         <h3 id="questionText"></h3>
         <div id="answersContainer" class="answers"></div>
         <p id="feedback" class="feedback"></p>
-        <button id="nextBtn" class="primary-btn hidden" type="button">לשלב הבא</button>
+        <button id="nextBtn" class="primary-btn hidden" type="button">לַשָּׁלָב הַבָּא</button>
       </div>
     </section>
   </main>
 
   <footer class="app-footer">
-    <small>נבנה במיוחד לילדי כיתה א׳ • מתאים למחשב ולנייד</small>
+    <small>נִבְנָה בִּמְיוּחָד לְיַלְדֵי כִּתָּה א׳ • מַתְאִים לְמַחְשֵׁב וְלַנַּיָּד</small>
   </footer>
 
   <script src="./script.js"></script>
