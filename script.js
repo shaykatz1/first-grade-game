@@ -311,6 +311,7 @@ function checkAnswer(index) {
   if (!activeLevel) return;
 
   const selectedTrack = getTrackState();
+  const currentLevelId = activeLevel.id;
   const buttons = Array.from(document.querySelectorAll(".answer-btn"));
   buttons.forEach((btn) => {
     btn.disabled = true;
@@ -321,7 +322,7 @@ function checkAnswer(index) {
   if (index === activeLevel.correct) {
     const firstCompletion = !selectedTrack.data.completed.includes(activeLevel.id);
 
-    feedback.textContent = "כָּל הַכָּבוֹד! תְּשׁוּבָה נְכוֹנָה!";
+    feedback.textContent = "כָּל הַכָּבוֹד! תְּשׁוּבָה נְכוֹנָה! מַמְשִׁיכִים...";
     feedback.classList.add("ok");
     showBurst(false);
 
@@ -342,7 +343,7 @@ function checkAnswer(index) {
 
     saveProgress();
     render();
-    nextBtn.classList.remove("hidden");
+    queueAutoNext(currentLevelId);
     return;
   }
 
@@ -356,6 +357,22 @@ function checkAnswer(index) {
   }, 700);
 }
 
+function queueAutoNext(currentLevelId) {
+  setTimeout(() => {
+    const selectedTrack = getTrackState();
+    const nextId = currentLevelId + 1;
+
+    if (nextId <= selectedTrack.data.unlockedLevel && nextId <= selectedTrack.config.levels.length) {
+      openLevel(nextId);
+      return;
+    }
+
+    activeLevel = null;
+    questionCard.classList.add("hidden");
+    welcomeCard.classList.remove("hidden");
+  }, 1000);
+}
+
 function showBurst(isBig) {
   celebrationBurst.className = `celebration-burst ${isBig ? "burst-big" : "burst-small"}`;
   setTimeout(() => {
@@ -367,4 +384,7 @@ function showMilestone(trackLabel, levelId) {
   milestoneTitle.textContent = "הִשָּׂג גָּדוֹל!";
   milestoneText.textContent = `סִיַּמְתָּ ${levelId} שְׁלָבִים בְּ${trackLabel}. מַמָּשׁ אַלּוּף!`;
   milestoneModal.classList.add("open");
+  setTimeout(() => {
+    milestoneModal.classList.remove("open");
+  }, 1500);
 }
