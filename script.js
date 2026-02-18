@@ -108,6 +108,39 @@ const gamesData = {
       { prompt: "🧸", options: ["בֻּבָּה", "מִטָּה", "כִּסֵּא"], correct: 0 }
     ]
   },
+  quickCount: {
+    title: "סְפִירָה מְהִירָה",
+    rounds: [
+      { prompt: "🍓🍓🍓🍓 = ?", options: ["3", "4", "5"], correct: 1 },
+      { prompt: "⚽⚽⚽⚽⚽ = ?", options: ["4", "5", "6"], correct: 1 },
+      { prompt: "🟨🟨🟨 = ?", options: ["2", "3", "4"], correct: 1 },
+      { prompt: "🐠🐠🐠🐠🐠🐠 = ?", options: ["5", "6", "7"], correct: 1 },
+      { prompt: "🧁🧁 = ?", options: ["1", "2", "3"], correct: 1 },
+      { prompt: "🌟🌟🌟🌟🌟🌟🌟 = ?", options: ["6", "7", "8"], correct: 1 }
+    ]
+  },
+  oddOneOut: {
+    title: "יוֹצֵא דֹּפֶן",
+    rounds: [
+      { prompt: "מָה יוֹצֵא דֹּפֶן? 🐶 🐱 🍎", options: ["🐶", "🐱", "🍎"], correct: 2 },
+      { prompt: "מָה יוֹצֵא דֹּפֶן? 🚗 🚌 🍌", options: ["🚗", "🍌", "🚌"], correct: 1 },
+      { prompt: "מָה יוֹצֵא דֹּפֶן? ✏️ 📘 ⚽", options: ["✏️", "📘", "⚽"], correct: 2 },
+      { prompt: "מָה יוֹצֵא דֹּפֶן? 🌞 🌙 🐟", options: ["🌙", "🐟", "🌞"], correct: 1 },
+      { prompt: "מָה יוֹצֵא דֹּפֶן? 🍞 🍎 🥕", options: ["🍞", "🍎", "🥕"], correct: 0 },
+      { prompt: "מָה יוֹצֵא דֹּפֶן? 🐦 🐮 🌳", options: ["🐮", "🌳", "🐦"], correct: 1 }
+    ]
+  },
+  patternNext: {
+    title: "מָה בָּא אַחֲרֵי?",
+    rounds: [
+      { prompt: "1, 2, 3, ?", options: ["4", "5", "2"], correct: 0 },
+      { prompt: "2, 4, 6, ?", options: ["7", "8", "10"], correct: 1 },
+      { prompt: "🍎, 🍌, 🍎, 🍌, ?", options: ["🍎", "🍓", "🍌"], correct: 0 },
+      { prompt: "🔵, 🔴, 🔵, 🔴, ?", options: ["🔴", "🟢", "🔵"], correct: 2 },
+      { prompt: "5, 4, 3, ?", options: ["2", "1", "4"], correct: 0 },
+      { prompt: "⭐, ⭐⭐, ⭐⭐⭐, ?", options: ["⭐⭐⭐⭐", "⭐⭐", "⭐⭐⭐⭐⭐"], correct: 0 }
+    ]
+  },
   maze: {
     title: "מָבוֹךְ: לֹחֲצִים עַל הַמַּשְׁבֶּצֶת הַבָּאָה",
     path: [
@@ -188,7 +221,10 @@ const tracks = {
     stages: [
       { id: 1, title: "מִשְׂחָק 1: תַּשְׁבֵּץ קָטָן", gameId: "missingLetter" },
       { id: 2, title: "מִשְׂחָק 2: הַתְאָמָה", gameId: "matchEmoji" },
-      { id: 3, title: "מִשְׂחָק 3: מָבוֹךְ", gameId: "maze" }
+      { id: 3, title: "מִשְׂחָק 3: סְפִירָה מְהִירָה", gameId: "quickCount" },
+      { id: 4, title: "מִשְׂחָק 4: יוֹצֵא דֹּפֶן", gameId: "oddOneOut" },
+      { id: 5, title: "מִשְׂחָק 5: מָה בָּא אַחֲרֵי", gameId: "patternNext" },
+      { id: 6, title: "מִשְׂחָק 6: מָבוֹךְ", gameId: "maze" }
     ]
   }
 };
@@ -524,18 +560,24 @@ function openGameStage(stage) {
 function renderChoiceRound() {
   const game = gamesData[activeGameState.key];
   const round = game.rounds[activeGameState.roundIndex];
+  const shuffledOptions = shuffleArray(
+    round.options.map((option, optionIndex) => ({
+      text: option,
+      isCorrect: optionIndex === round.correct
+    }))
+  );
   gamesProgress.textContent = `סֶבֶב ${activeGameState.roundIndex + 1}/${activeGameState.total}`;
   gamesText.textContent = round.prompt;
 
   const optionsWrap = document.createElement("div");
   optionsWrap.className = "games-options";
 
-  round.options.forEach((option, idx) => {
+  shuffledOptions.forEach((item) => {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.textContent = option;
+    btn.textContent = item.text;
     btn.addEventListener("click", () => {
-      if (idx === round.correct) {
+      if (item.isCorrect) {
         activeGameState.correct += 1;
         gamesText.textContent = "כָּל הַכָּבוֹד! מַמְשִׁיכִים...";
         showBurst(false);
