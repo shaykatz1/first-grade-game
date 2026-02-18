@@ -231,6 +231,11 @@ const tracks = {
 
 const storageKey = "first-grade-progress-v5";
 
+const homeScreen = document.getElementById("homeScreen");
+const appLayout = document.getElementById("appLayout");
+const statsPanel = document.getElementById("statsPanel");
+const levelsPanel = document.getElementById("levelsPanel");
+const gamePanel = document.getElementById("gamePanel");
 const levelsTitle = document.getElementById("levelsTitle");
 const levelsContainer = document.getElementById("levelsContainer");
 const welcomeCard = document.getElementById("welcomeCard");
@@ -251,11 +256,14 @@ const starsCount = document.getElementById("starsCount");
 const unlockedCount = document.getElementById("unlockedCount");
 const correctCount = document.getElementById("correctCount");
 const resetProgressBtn = document.getElementById("resetProgressBtn");
-const changeTrackBtn = document.getElementById("changeTrackBtn");
-const trackChooser = document.getElementById("trackChooser");
-const chooseLanguageBtn = document.getElementById("chooseLanguageBtn");
-const chooseMathBtn = document.getElementById("chooseMathBtn");
-const chooseGamesBtn = document.getElementById("chooseGamesBtn");
+const chooseLanguageMainBtn = document.getElementById("chooseLanguageMainBtn");
+const chooseMathMainBtn = document.getElementById("chooseMathMainBtn");
+const chooseGamesMainBtn = document.getElementById("chooseGamesMainBtn");
+const backHomeBtn = document.getElementById("backHomeBtn");
+const backStagesBtn = document.getElementById("backStagesBtn");
+const backHomeFromPlayBtn = document.getElementById("backHomeFromPlayBtn");
+const backStagesFromGamesBtn = document.getElementById("backStagesFromGamesBtn");
+const backHomeFromGamesBtn = document.getElementById("backHomeFromGamesBtn");
 const celebrationBurst = document.getElementById("celebrationBurst");
 const milestoneModal = document.getElementById("milestoneModal");
 const milestoneTitle = document.getElementById("milestoneTitle");
@@ -272,23 +280,24 @@ let stageCorrectThisRun = 0;
 let activeGameState = null;
 
 bindEvents();
-render();
-renderTrackOverlay();
+showHomeScreen();
 
 function bindEvents() {
-  chooseLanguageBtn.addEventListener("click", () => selectTrack("language"));
-  chooseMathBtn.addEventListener("click", () => selectTrack("math"));
-  chooseGamesBtn.addEventListener("click", () => selectTrack("games"));
-  changeTrackBtn.addEventListener("click", openTrackChooser);
+  chooseLanguageMainBtn.addEventListener("click", () => selectTrack("language"));
+  chooseMathMainBtn.addEventListener("click", () => selectTrack("math"));
+  chooseGamesMainBtn.addEventListener("click", () => selectTrack("games"));
+  backHomeBtn.addEventListener("click", () => goHome());
+  backStagesBtn.addEventListener("click", () => showStagesScreen());
+  backHomeFromPlayBtn.addEventListener("click", () => goHome());
+  backStagesFromGamesBtn.addEventListener("click", () => showStagesScreen());
+  backHomeFromGamesBtn.addEventListener("click", () => goHome());
   nextBtn.classList.add("hidden");
 
   resetProgressBtn.addEventListener("click", () => {
     progress = cloneDefaultProgress();
     saveProgress();
     resetSessionState();
-    showWelcome();
-    render();
-    renderTrackOverlay();
+    showStagesScreen();
   });
 
   closeMilestoneBtn.addEventListener("click", () => milestoneModal.classList.remove("open"));
@@ -305,6 +314,46 @@ function showWelcome() {
   questionCard.classList.add("hidden");
   gamesCard.classList.add("hidden");
   welcomeCard.classList.remove("hidden");
+}
+
+function showHomeScreen() {
+  resetSessionState();
+  homeScreen.classList.remove("hidden");
+  appLayout.classList.add("hidden");
+  showWelcome();
+}
+
+function showStagesScreen() {
+  if (!progress.selectedTrack) {
+    showHomeScreen();
+    return;
+  }
+
+  resetSessionState();
+  homeScreen.classList.add("hidden");
+  appLayout.classList.remove("hidden");
+  appLayout.classList.remove("play-mode");
+  statsPanel.classList.remove("hidden");
+  levelsPanel.classList.remove("hidden");
+  gamePanel.classList.remove("hidden");
+  showWelcome();
+  render();
+}
+
+function showPlayScreen() {
+  homeScreen.classList.add("hidden");
+  appLayout.classList.remove("hidden");
+  appLayout.classList.add("play-mode");
+  statsPanel.classList.add("hidden");
+  levelsPanel.classList.add("hidden");
+  gamePanel.classList.remove("hidden");
+  welcomeCard.classList.add("hidden");
+}
+
+function goHome() {
+  progress.selectedTrack = null;
+  saveProgress();
+  showHomeScreen();
 }
 
 function cloneDefaultProgress() {
@@ -351,23 +400,10 @@ function getTrackState() {
   return { key, config: tracks[key], data: progress[key] };
 }
 
-function renderTrackOverlay() {
-  trackChooser.classList.toggle("open", !progress.selectedTrack);
-}
-
-function openTrackChooser() {
-  resetSessionState();
-  showWelcome();
-  trackChooser.classList.add("open");
-}
-
 function selectTrack(trackKey) {
   progress.selectedTrack = trackKey;
   saveProgress();
-  resetSessionState();
-  showWelcome();
-  trackChooser.classList.remove("open");
-  render();
+  showStagesScreen();
 }
 
 function render() {
@@ -414,13 +450,14 @@ function openStage(stageId) {
   stageCorrectThisRun = 0;
 
   if (selectedTrack.config.mode === "games") {
+    showPlayScreen();
     openGameStage(stage);
     return;
   }
 
-  welcomeCard.classList.add("hidden");
-  gamesCard.classList.add("hidden");
+  showPlayScreen();
   questionCard.classList.remove("hidden");
+  gamesCard.classList.add("hidden");
   renderQuestion();
 }
 
@@ -527,8 +564,7 @@ function finishStage(total, correct) {
   render();
 
   setTimeout(() => {
-    resetSessionState();
-    showWelcome();
+    showStagesScreen();
   }, 1300);
 }
 
