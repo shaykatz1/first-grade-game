@@ -160,6 +160,10 @@ h3 {
   background: #d7f3ff;
 }
 
+.level-games {
+  background: #efd9ff;
+}
+
 .level-locked {
   background: var(--lock);
   cursor: not-allowed;
@@ -222,6 +226,76 @@ h3 {
 .math-answer {
   direction: ltr;
   text-align: left;
+}
+
+#gamesArea {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.games-options {
+  display: grid;
+  gap: 10px;
+}
+
+.games-options button,
+.maze-controls button {
+  border: 1px solid #dbe2ea;
+  background: #f8fbff;
+  border-radius: 12px;
+  padding: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.games-options button:hover,
+.maze-controls button:hover {
+  background: #edf6ff;
+}
+
+.maze-board {
+  display: grid;
+  grid-template-columns: repeat(5, 44px);
+  gap: 6px;
+  justify-content: center;
+}
+
+.maze-cell {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 1px solid #dce4ec;
+  background: #fff;
+}
+
+.maze-cell.block {
+  background: #dfe6ee;
+}
+
+.maze-cell.path {
+  background: #fff8d9;
+}
+
+.maze-cell.player {
+  background: #b6f3d4;
+  border-color: #22b573;
+}
+
+.maze-cell.goal {
+  background: #ffe6a9;
+  border-color: #f0b43c;
+}
+
+.maze-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(90px, 1fr));
+  gap: 8px;
 }
 
 .feedback {
@@ -296,6 +370,10 @@ h3 {
 
 .track-choice.math {
   background: #d7f3ff;
+}
+
+.track-choice.games {
+  background: #f4d8ff;
 }
 
 .overlay-card.milestone {

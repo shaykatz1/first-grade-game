@@ -85,6 +85,37 @@ const visualMathQuestions = [
   { prompt: "🎈🎈🎈🎈🎈🎈🎈🎈🎈 = ?", options: ["8", "9", "10"], correct: 1 }
 ];
 
+const gamesData = {
+  missingLetter: {
+    title: "תַּשְׁבֵּץ קָטָן: אוֹת חֲסֵרָה",
+    rounds: [
+      { prompt: "בּ_ת", options: ["י", "כ", "מ"], correct: 0, answer: "בַּיִת" },
+      { prompt: "כּ_לֶב", options: ["ל", "ר", "נ"], correct: 0, answer: "כֶּלֶב" },
+      { prompt: "דּ_לֶת", options: ["ל", "י", "ת"], correct: 0, answer: "דֶּלֶת" },
+      { prompt: "ס_ס", options: ["ו", "י", "מ"], correct: 0, answer: "סוּס" },
+      { prompt: "שׁ_מֶשׁ", options: ["מ", "נ", "ר"], correct: 0, answer: "שֶׁמֶשׁ" },
+      { prompt: "תַּפּ_חַ", options: ["ו", "י", "ל"], correct: 0, answer: "תַּפּוּחַ" }
+    ]
+  },
+  matchEmoji: {
+    title: "הַתְאָמַת תְּמוּנָה לְמִלָּה",
+    rounds: [
+      { prompt: "🍎", options: ["תַּפּוּחַ", "אֲגָס", "עִפָּרוֹן"], correct: 0 },
+      { prompt: "🐟", options: ["דָּג", "סוּס", "חָתוּל"], correct: 0 },
+      { prompt: "🏠", options: ["בַּיִת", "חָלוֹן", "דֶּלֶת"], correct: 0 },
+      { prompt: "📘", options: ["סֵפֶר", "מַחְבֶּרֶת", "תִּיק"], correct: 0 },
+      { prompt: "🌞", options: ["שֶׁמֶשׁ", "יָם", "לַיְלָה"], correct: 0 },
+      { prompt: "🧸", options: ["בֻּבָּה", "מִטָּה", "כִּסֵּא"], correct: 0 }
+    ]
+  },
+  maze: {
+    title: "מָבוֹךְ מִסְפָּרִים",
+    path: [
+      [0, 0], [0, 1], [1, 1], [2, 1], [2, 2], [2, 3], [3, 3], [4, 3], [4, 4]
+    ]
+  }
+};
+
 function buildMathQuestion(a, b, op) {
   const answer = op === "+" ? a + b : a - b;
   const options = createNumberOptions(answer);
@@ -97,76 +128,55 @@ function buildMathQuestion(a, b, op) {
 
 function createNumberOptions(answer) {
   const min = Math.max(0, answer - 2);
-  const max = answer + 2;
   const set = new Set([answer]);
-
-  for (let value = min; value <= max; value += 1) {
+  for (let value = min; value <= answer + 2; value += 1) {
     if (set.size >= 3) break;
     if (value !== answer) set.add(value);
   }
-
   let candidate = answer + 3;
   while (set.size < 3) {
     set.add(candidate);
     candidate += 1;
   }
-
   return Array.from(set).slice(0, 3);
 }
 
 function buildMathBank() {
   const bank = [...visualMathQuestions];
-
-  const additions = [
-    [1, 1], [2, 2], [3, 4], [4, 4], [5, 3], [6, 3], [7, 2], [8, 2], [9, 1], [5, 5],
-    [2, 5], [4, 5], [3, 6], [7, 3], [8, 4], [9, 2], [6, 6], [10, 2], [7, 4], [3, 7]
-  ];
-
-  const subtractions = [
-    [5, 2], [7, 3], [9, 4], [10, 1], [11, 1], [12, 2], [14, 4], [15, 5], [13, 3], [16, 6],
-    [8, 3], [6, 2], [10, 3], [12, 5], [9, 3], [17, 7], [18, 8], [20, 10], [11, 4], [19, 9]
-  ];
-
-  additions.forEach(([a, b]) => {
-    bank.push(buildMathQuestion(a, b, "+"));
-  });
-
-  subtractions.forEach(([a, b]) => {
-    bank.push(buildMathQuestion(a, b, "-"));
-  });
-
+  const additions = [[1, 1], [2, 2], [3, 4], [4, 4], [5, 3], [6, 3], [7, 2], [8, 2], [9, 1], [5, 5], [2, 5], [4, 5], [3, 6], [7, 3], [8, 4], [9, 2], [6, 6], [10, 2], [7, 4], [3, 7]];
+  const subtractions = [[5, 2], [7, 3], [9, 4], [10, 1], [11, 1], [12, 2], [14, 4], [15, 5], [13, 3], [16, 6], [8, 3], [6, 2], [10, 3], [12, 5], [9, 3], [17, 7], [18, 8], [20, 10], [11, 4], [19, 9]];
+  additions.forEach(([a, b]) => bank.push(buildMathQuestion(a, b, "+")));
+  subtractions.forEach(([a, b]) => bank.push(buildMathQuestion(a, b, "-")));
   return bank;
 }
-
-const mathQuestionBank = buildMathBank();
 
 function chunkQuestionsToStages(questions, trackLabel, stageSize = 6) {
   const stages = [];
   for (let i = 0; i < questions.length; i += stageSize) {
     const stageId = Math.floor(i / stageSize) + 1;
-    stages.push({
-      id: stageId,
-      title: `${trackLabel} ${stageId}`,
-      questions: questions.slice(i, i + stageSize)
-    });
+    stages.push({ id: stageId, title: `${trackLabel} ${stageId}`, questions: questions.slice(i, i + stageSize) });
   }
   return stages;
 }
 
+const mathQuestionBank = buildMathBank();
+
 const tracks = {
-  language: {
-    label: "שָׂפָה",
-    levelLabel: "שַׁלְבֵי שָׂפָה",
-    stages: chunkQuestionsToStages(languageQuestionBank, "שָׂפָה")
-  },
-  math: {
-    label: "חֶשְׁבּוֹן",
-    levelLabel: "שַׁלְבֵי חֶשְׁבּוֹן",
-    stages: chunkQuestionsToStages(mathQuestionBank, "חֶשְׁבּוֹן")
+  language: { label: "שָׂפָה", levelLabel: "שַׁלְבֵי שָׂפָה", mode: "quiz", stages: chunkQuestionsToStages(languageQuestionBank, "שָׂפָה") },
+  math: { label: "חֶשְׁבּוֹן", levelLabel: "שַׁלְבֵי חֶשְׁבּוֹן", mode: "quiz", stages: chunkQuestionsToStages(mathQuestionBank, "חֶשְׁבּוֹן") },
+  games: {
+    label: "מִשְׂחָקִים",
+    levelLabel: "מִשְׂחָקִים לְתִרְגּוּל",
+    mode: "games",
+    stages: [
+      { id: 1, title: "מִשְׂחָק 1: תַּשְׁבֵּץ קָטָן", gameId: "missingLetter" },
+      { id: 2, title: "מִשְׂחָק 2: הַתְאָמָה", gameId: "matchEmoji" },
+      { id: 3, title: "מִשְׂחָק 3: מָבוֹךְ", gameId: "maze" }
+    ]
   }
 };
 
-const storageKey = "first-grade-progress-v4";
+const storageKey = "first-grade-progress-v5";
 
 const levelsTitle = document.getElementById("levelsTitle");
 const levelsContainer = document.getElementById("levelsContainer");
@@ -178,6 +188,12 @@ const questionText = document.getElementById("questionText");
 const answersContainer = document.getElementById("answersContainer");
 const feedback = document.getElementById("feedback");
 const nextBtn = document.getElementById("nextBtn");
+const gamesCard = document.getElementById("gamesCard");
+const gamesTag = document.getElementById("gamesTag");
+const gamesProgress = document.getElementById("gamesProgress");
+const gamesTitle = document.getElementById("gamesTitle");
+const gamesText = document.getElementById("gamesText");
+const gamesArea = document.getElementById("gamesArea");
 const starsCount = document.getElementById("starsCount");
 const unlockedCount = document.getElementById("unlockedCount");
 const correctCount = document.getElementById("correctCount");
@@ -186,6 +202,7 @@ const changeTrackBtn = document.getElementById("changeTrackBtn");
 const trackChooser = document.getElementById("trackChooser");
 const chooseLanguageBtn = document.getElementById("chooseLanguageBtn");
 const chooseMathBtn = document.getElementById("chooseMathBtn");
+const chooseGamesBtn = document.getElementById("chooseGamesBtn");
 const celebrationBurst = document.getElementById("celebrationBurst");
 const milestoneModal = document.getElementById("milestoneModal");
 const milestoneTitle = document.getElementById("milestoneTitle");
@@ -193,17 +210,13 @@ const milestoneText = document.getElementById("milestoneText");
 const closeMilestoneBtn = document.getElementById("closeMilestoneBtn");
 
 const defaultTrackProgress = { completedStages: [], completedQuestions: [], stars: 0, correctAnswers: 0 };
-
-const defaultProgress = {
-  selectedTrack: null,
-  language: { ...defaultTrackProgress },
-  math: { ...defaultTrackProgress }
-};
+const defaultProgress = { selectedTrack: null, language: { ...defaultTrackProgress }, math: { ...defaultTrackProgress }, games: { ...defaultTrackProgress } };
 
 let progress = loadProgress();
 let activeStage = null;
 let activeQuestionIndex = 0;
 let stageCorrectThisRun = 0;
+let activeGameState = null;
 
 bindEvents();
 render();
@@ -212,32 +225,41 @@ renderTrackOverlay();
 function bindEvents() {
   chooseLanguageBtn.addEventListener("click", () => selectTrack("language"));
   chooseMathBtn.addEventListener("click", () => selectTrack("math"));
+  chooseGamesBtn.addEventListener("click", () => selectTrack("games"));
   changeTrackBtn.addEventListener("click", openTrackChooser);
-
   nextBtn.classList.add("hidden");
 
   resetProgressBtn.addEventListener("click", () => {
     progress = cloneDefaultProgress();
     saveProgress();
-    activeStage = null;
-    activeQuestionIndex = 0;
-    stageCorrectThisRun = 0;
-    questionCard.classList.add("hidden");
-    welcomeCard.classList.remove("hidden");
+    resetSessionState();
+    showWelcome();
     render();
     renderTrackOverlay();
   });
 
-  closeMilestoneBtn.addEventListener("click", () => {
-    milestoneModal.classList.remove("open");
-  });
+  closeMilestoneBtn.addEventListener("click", () => milestoneModal.classList.remove("open"));
+}
+
+function resetSessionState() {
+  activeStage = null;
+  activeQuestionIndex = 0;
+  stageCorrectThisRun = 0;
+  activeGameState = null;
+}
+
+function showWelcome() {
+  questionCard.classList.add("hidden");
+  gamesCard.classList.add("hidden");
+  welcomeCard.classList.remove("hidden");
 }
 
 function cloneDefaultProgress() {
   return {
     selectedTrack: null,
     language: { completedStages: [], completedQuestions: [], stars: 0, correctAnswers: 0 },
-    math: { completedStages: [], completedQuestions: [], stars: 0, correctAnswers: 0 }
+    math: { completedStages: [], completedQuestions: [], stars: 0, correctAnswers: 0 },
+    games: { completedStages: [], completedQuestions: [], stars: 0, correctAnswers: 0 }
   };
 }
 
@@ -254,13 +276,13 @@ function normalizeTrackProgress(value) {
 function loadProgress() {
   const raw = localStorage.getItem(storageKey);
   if (!raw) return cloneDefaultProgress();
-
   try {
     const parsed = JSON.parse(raw);
     return {
-      selectedTrack: parsed.selectedTrack === "language" || parsed.selectedTrack === "math" ? parsed.selectedTrack : null,
+      selectedTrack: ["language", "math", "games"].includes(parsed.selectedTrack) ? parsed.selectedTrack : null,
       language: normalizeTrackProgress(parsed.language),
-      math: normalizeTrackProgress(parsed.math)
+      math: normalizeTrackProgress(parsed.math),
+      games: normalizeTrackProgress(parsed.games)
     };
   } catch {
     return cloneDefaultProgress();
@@ -281,22 +303,16 @@ function renderTrackOverlay() {
 }
 
 function openTrackChooser() {
-  activeStage = null;
-  activeQuestionIndex = 0;
-  stageCorrectThisRun = 0;
-  questionCard.classList.add("hidden");
-  welcomeCard.classList.remove("hidden");
+  resetSessionState();
+  showWelcome();
   trackChooser.classList.add("open");
 }
 
 function selectTrack(trackKey) {
   progress.selectedTrack = trackKey;
   saveProgress();
-  activeStage = null;
-  activeQuestionIndex = 0;
-  stageCorrectThisRun = 0;
-  questionCard.classList.add("hidden");
-  welcomeCard.classList.remove("hidden");
+  resetSessionState();
+  showWelcome();
   trackChooser.classList.remove("open");
   render();
 }
@@ -320,12 +336,11 @@ function renderStages() {
 
   selectedTrack.config.stages.forEach((stage) => {
     const isDone = selectedTrack.data.completedStages.includes(stage.id);
-
     const button = document.createElement("button");
     button.type = "button";
     button.className = [
       "level-btn",
-      selectedTrack.key === "language" ? "level-language" : "level-math",
+      selectedTrack.key === "language" ? "level-language" : selectedTrack.key === "math" ? "level-math" : "level-games",
       isDone ? "level-done" : ""
     ].join(" ").trim();
 
@@ -344,14 +359,20 @@ function openStage(stageId) {
   activeStage = stage;
   activeQuestionIndex = 0;
   stageCorrectThisRun = 0;
+
+  if (selectedTrack.config.mode === "games") {
+    openGameStage(stage);
+    return;
+  }
+
   welcomeCard.classList.add("hidden");
+  gamesCard.classList.add("hidden");
   questionCard.classList.remove("hidden");
   renderQuestion();
 }
 
 function renderQuestion() {
   if (!activeStage) return;
-
   const selectedTrack = getTrackState();
   const isMath = selectedTrack.key === "math";
   const question = activeStage.questions[activeQuestionIndex];
@@ -381,7 +402,6 @@ function renderQuestion() {
 
 function handleAnswer(index) {
   if (!activeStage) return;
-
   const selectedTrack = getTrackState();
   const question = activeStage.questions[activeQuestionIndex];
   const buttons = Array.from(document.querySelectorAll(".answer-btn"));
@@ -397,7 +417,6 @@ function handleAnswer(index) {
     feedback.classList.add("ok");
     showBurst(false);
     stageCorrectThisRun += 1;
-
     if (isFirstQuestionSolve) {
       selectedTrack.data.completedQuestions.push(questionKey);
       selectedTrack.data.stars += 1;
@@ -411,28 +430,21 @@ function handleAnswer(index) {
 
   saveProgress();
   renderStats();
-
-  setTimeout(() => {
-    goToNextQuestion();
-  }, 1000);
+  setTimeout(goToNextQuestion, 1000);
 }
 
 function goToNextQuestion() {
   if (!activeStage) return;
-
   activeQuestionIndex += 1;
-
   if (activeQuestionIndex < activeStage.questions.length) {
     renderQuestion();
     return;
   }
-
-  finishStage();
+  finishStage(activeStage.questions.length, stageCorrectThisRun);
 }
 
-function finishStage() {
+function finishStage(total, correct) {
   if (!activeStage) return;
-
   const selectedTrack = getTrackState();
   const wasCompleted = selectedTrack.data.completedStages.includes(activeStage.id);
 
@@ -442,11 +454,16 @@ function finishStage() {
     selectedTrack.data.stars += 3;
   }
 
-  const correctText = `${stageCorrectThisRun}/${activeStage.questions.length}`;
-  feedback.textContent = `הַשָּׁלָב הֻשְׁלַם! תְּשׁוּבוֹת נְכוֹנוֹת בַּשָּׁלָב: ${correctText}`;
-  feedback.className = "feedback ok";
+  const correctText = `${correct}/${total}`;
 
-  if (activeStage.id % 3 === 0) {
+  if (selectedTrack.config.mode === "games") {
+    gamesText.textContent = `הַמִּשְׂחָק הֻשְׁלַם! תּוֹצָאָה: ${correctText}`;
+  } else {
+    feedback.textContent = `הַשָּׁלָב הֻשְׁלַם! תּוֹצָאָה: ${correctText}`;
+    feedback.className = "feedback ok";
+  }
+
+  if (activeStage.id % 2 === 0) {
     showBurst(true);
     showMilestone(selectedTrack.config.label, activeStage.id, correctText);
   } else {
@@ -457,12 +474,157 @@ function finishStage() {
   render();
 
   setTimeout(() => {
-    activeStage = null;
-    activeQuestionIndex = 0;
-    stageCorrectThisRun = 0;
-    questionCard.classList.add("hidden");
-    welcomeCard.classList.remove("hidden");
+    resetSessionState();
+    showWelcome();
   }, 1300);
+}
+
+function openGameStage(stage) {
+  const gameKey = stage.gameId;
+  welcomeCard.classList.add("hidden");
+  questionCard.classList.add("hidden");
+  gamesCard.classList.remove("hidden");
+
+  gamesTag.textContent = `${stage.title} (מִשְׂחָק)`;
+  gamesTitle.textContent = gamesData[gameKey].title;
+  gamesArea.innerHTML = "";
+
+  if (gameKey === "maze") {
+    activeGameState = { key: gameKey, stageId: stage.id, step: 0, moves: 0, total: gamesData.maze.path.length - 1 };
+    renderMazeGame();
+    return;
+  }
+
+  const rounds = gamesData[gameKey].rounds;
+  activeGameState = { key: gameKey, stageId: stage.id, roundIndex: 0, correct: 0, total: rounds.length };
+  renderRoundGame();
+}
+
+function renderRoundGame() {
+  const game = gamesData[activeGameState.key];
+  const round = game.rounds[activeGameState.roundIndex];
+  gamesProgress.textContent = `סֶבֶב ${activeGameState.roundIndex + 1}/${activeGameState.total}`;
+  gamesText.textContent = round.prompt;
+
+  const optionsWrap = document.createElement("div");
+  optionsWrap.className = "games-options";
+
+  round.options.forEach((option, idx) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = option;
+    btn.addEventListener("click", () => {
+      if (idx === round.correct) {
+        activeGameState.correct += 1;
+        gamesText.textContent = "כָּל הַכָּבוֹד! מַמְשִׁיכִים...";
+        showBurst(false);
+      } else {
+        gamesText.textContent = `נִסָּיוֹן יָפֶה. הַתְּשׁוּבָה: ${round.options[round.correct]}`;
+      }
+      setTimeout(() => {
+        activeGameState.roundIndex += 1;
+        if (activeGameState.roundIndex < activeGameState.total) {
+          renderRoundGame();
+        } else {
+          const selectedTrack = getTrackState();
+          selectedTrack.data.correctAnswers += activeGameState.correct;
+          selectedTrack.data.stars += activeGameState.correct;
+          finishStage(activeGameState.total, activeGameState.correct);
+        }
+      }, 900);
+    });
+    optionsWrap.appendChild(btn);
+  });
+
+  gamesArea.innerHTML = "";
+  gamesArea.appendChild(optionsWrap);
+}
+
+function renderMazeGame() {
+  gamesProgress.textContent = `צַעַד ${activeGameState.step}/${activeGameState.total}`;
+  gamesText.textContent = "הַגִּיעוּ לַגָּבִיעַ עַל הַמַּסְלוּל הַצָּהֹב.";
+
+  const board = document.createElement("div");
+  board.className = "maze-board";
+
+  for (let r = 0; r < 5; r += 1) {
+    for (let c = 0; c < 5; c += 1) {
+      const cell = document.createElement("div");
+      const pathIndex = findPathIndex(r, c);
+      cell.className = "maze-cell";
+
+      if (pathIndex === -1) {
+        cell.classList.add("block");
+      } else {
+        cell.classList.add("path");
+        cell.textContent = String(pathIndex);
+      }
+
+      if (pathIndex === activeGameState.step) {
+        cell.classList.add("player");
+        cell.textContent = "😀";
+      }
+
+      if (pathIndex === activeGameState.total) {
+        cell.classList.add("goal");
+        if (pathIndex !== activeGameState.step) {
+          cell.textContent = "🏆";
+        }
+      }
+
+      board.appendChild(cell);
+    }
+  }
+
+  const controls = document.createElement("div");
+  controls.className = "maze-controls";
+
+  [
+    { label: "⬆️ לְמַעְלָה", dr: -1, dc: 0 },
+    { label: "⬇️ לְמַטָּה", dr: 1, dc: 0 },
+    { label: "⬅️ שְׂמֹאל", dr: 0, dc: -1 },
+    { label: "➡️ יָמִין", dr: 0, dc: 1 }
+  ].forEach((move) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = move.label;
+    btn.addEventListener("click", () => handleMazeMove(move.dr, move.dc));
+    controls.appendChild(btn);
+  });
+
+  gamesArea.innerHTML = "";
+  gamesArea.appendChild(board);
+  gamesArea.appendChild(controls);
+}
+
+function findPathIndex(row, col) {
+  return gamesData.maze.path.findIndex(([r, c]) => r === row && c === col);
+}
+
+function handleMazeMove(dr, dc) {
+  const current = gamesData.maze.path[activeGameState.step];
+  const target = [current[0] + dr, current[1] + dc];
+  const nextStep = activeGameState.step + 1;
+  const expected = gamesData.maze.path[nextStep];
+
+  if (expected && target[0] === expected[0] && target[1] === expected[1]) {
+    activeGameState.step = nextStep;
+    activeGameState.moves += 1;
+    showBurst(false);
+
+    if (activeGameState.step === activeGameState.total) {
+      const selectedTrack = getTrackState();
+      selectedTrack.data.correctAnswers += activeGameState.total;
+      selectedTrack.data.stars += 5;
+      finishStage(activeGameState.total, activeGameState.total);
+      return;
+    }
+
+    renderMazeGame();
+    return;
+  }
+
+  gamesText.textContent = "כִּמְעַט! נְנַסֶּה כִּוּוּן אַחֵר.";
 }
 
 function showBurst(isBig) {
@@ -474,7 +636,7 @@ function showBurst(isBig) {
 
 function showMilestone(trackLabel, stageId, correctText) {
   milestoneTitle.textContent = "הִשָּׂג גָּדוֹל!";
-  milestoneText.textContent = `סִיַּמְתָּ אֶת שָׁלָב ${stageId} בְּ${trackLabel}. תּוֹצָאָה: ${correctText}.`;
+  milestoneText.textContent = `סִיַּמְתָּ שָׁלָב ${stageId} בְּ${trackLabel}. תּוֹצָאָה: ${correctText}.`;
   milestoneModal.classList.add("open");
   setTimeout(() => {
     milestoneModal.classList.remove("open");

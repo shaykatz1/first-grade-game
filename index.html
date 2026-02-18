@@ -15,7 +15,7 @@
 
   <header class="app-header">
     <h1>עוֹלַם הַלְּמִידָה שֶׁל כִּתָּה א׳</h1>
-    <p>מִשְׂחָק לְשָׂפָה וְחֶשְׁבּוֹן, שָׁלָב אַחַר שָׁלָב.</p>
+    <p>שָׂפָה, חֶשְׁבּוֹן וּמִשְׂחָקִים לִימוּדִיִּים.</p>
   </header>
 
   <main class="layout">
@@ -62,6 +62,16 @@
         <p id="feedback" class="feedback"></p>
         <button id="nextBtn" class="primary-btn hidden" type="button">לַשָּׁלָב הַבָּא</button>
       </div>
+
+      <div id="gamesCard" class="card hidden">
+        <div class="question-head">
+          <span id="gamesTag"></span>
+          <span id="gamesProgress"></span>
+        </div>
+        <h3 id="gamesTitle"></h3>
+        <p id="gamesText"></p>
+        <div id="gamesArea"></div>
+      </div>
     </section>
   </main>
 
@@ -72,6 +82,7 @@
       <div class="overlay-actions">
         <button id="chooseLanguageBtn" class="track-choice language" type="button">שָׂפָה</button>
         <button id="chooseMathBtn" class="track-choice math" type="button">חֶשְׁבּוֹן</button>
+        <button id="chooseGamesBtn" class="track-choice games" type="button">מִשְׂחָקִים</button>
       </div>
     </div>
   </div>
