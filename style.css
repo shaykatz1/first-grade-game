@@ -167,7 +167,16 @@ h3 {
 }
 
 .level-done {
-  outline: 2px solid var(--ok);
+  background: #d9f8e8;
+  border: 2px solid #22b573;
+  color: #13573a;
+  font-weight: 700;
+  box-shadow: 0 8px 16px rgba(34, 181, 115, 0.25);
+}
+
+.level-done::before {
+  content: "✓ ";
+  font-weight: 700;
 }
 
 .card {
