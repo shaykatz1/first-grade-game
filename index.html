@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עולם הלמידה של כיתה א׳</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="background-shape shape-1"></div>
+  <div class="background-shape shape-2"></div>
+
+  <header class="app-header">
+    <h1>עולם הלמידה של כיתה א׳</h1>
+    <p>משחק חכם ללימוד שפה וחשבון, שלב אחרי שלב.</p>
+  </header>
+
+  <main class="layout">
+    <section class="stats-panel">
+      <h2>ההתקדמות שלי</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span>כוכבים</span>
+          <strong id="starsCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>שלבים פתוחים</span>
+          <strong id="unlockedCount">2</strong>
+        </div>
+        <div class="stat-card">
+          <span>תשובות נכונות</span>
+          <strong id="correctCount">0</strong>
+        </div>
+      </div>
+      <button id="resetProgressBtn" class="ghost-btn" type="button">איפוס התקדמות</button>
+    </section>
+
+    <section class="levels-panel">
+      <h2>בחרו שלב</h2>
+      <div id="levelsContainer" class="levels-grid"></div>
+    </section>
+
+    <section class="game-panel">
+      <div id="welcomeCard" class="card">
+        <h2>ברוכים הבאים</h2>
+        <p>בחרו שלב כדי להתחיל. כל שלב שתסיימו פותח שלב חדש!</p>
+      </div>
+
+      <div id="questionCard" class="card hidden">
+        <div class="question-head">
+          <span id="stageTag"></span>
+          <span id="starsPreview"></span>
+        </div>
+        <h3 id="questionText"></h3>
+        <div id="answersContainer" class="answers"></div>
+        <p id="feedback" class="feedback"></p>
+        <button id="nextBtn" class="primary-btn hidden" type="button">לשלב הבא</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>נבנה במיוחד לילדי כיתה א׳ • מתאים למחשב ולנייד</small>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
