@@ -87,14 +87,14 @@ const visualMathQuestions = [
 
 const gamesData = {
   missingLetter: {
-    title: "תַּשְׁבֵּץ קָטָן: אוֹת חֲסֵרָה",
+    title: "פָּאזֶל אוֹתִיּוֹת: בּוֹנִים מִלָּה",
     rounds: [
-      { prompt: "בּ_ת", options: ["י", "כ", "מ"], correct: 0, answer: "בַּיִת" },
-      { prompt: "כּ_לֶב", options: ["ל", "ר", "נ"], correct: 0, answer: "כֶּלֶב" },
-      { prompt: "דּ_לֶת", options: ["ל", "י", "ת"], correct: 0, answer: "דֶּלֶת" },
-      { prompt: "ס_ס", options: ["ו", "י", "מ"], correct: 0, answer: "סוּס" },
-      { prompt: "שׁ_מֶשׁ", options: ["מ", "נ", "ר"], correct: 0, answer: "שֶׁמֶשׁ" },
-      { prompt: "תַּפּ_חַ", options: ["ו", "י", "ל"], correct: 0, answer: "תַּפּוּחַ" }
+      { clue: "🏠", word: "בית" },
+      { clue: "🐶", word: "כלב" },
+      { clue: "🚪", word: "דלת" },
+      { clue: "🐴", word: "סוס" },
+      { clue: "☀️", word: "שמש" },
+      { clue: "🍎", word: "תפוח" }
     ]
   },
   matchEmoji: {
@@ -109,12 +109,29 @@ const gamesData = {
     ]
   },
   maze: {
-    title: "מָבוֹךְ מִסְפָּרִים",
+    title: "מָבוֹךְ: לֹחֲצִים עַל הַמַּשְׁבֶּצֶת הַבָּאָה",
     path: [
       [0, 0], [0, 1], [1, 1], [2, 1], [2, 2], [2, 3], [3, 3], [4, 3], [4, 4]
     ]
   }
 };
+
+const hebrewLetters = ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י", "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ", "ק", "ר", "ש", "ת"];
+
+function shuffleArray(items) {
+  const arr = [...items];
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buildWordRoundOptions(word) {
+  const letters = Array.from(word);
+  const extra = hebrewLetters.find((letter) => !letters.includes(letter)) || "מ";
+  return shuffleArray([...letters, extra]);
+}
 
 function buildMathQuestion(a, b, op) {
   const answer = op === "+" ? a + b : a - b;
@@ -490,17 +507,21 @@ function openGameStage(stage) {
   gamesArea.innerHTML = "";
 
   if (gameKey === "maze") {
-    activeGameState = { key: gameKey, stageId: stage.id, step: 0, moves: 0, total: gamesData.maze.path.length - 1 };
+    activeGameState = { key: gameKey, stageId: stage.id, step: 0, total: gamesData.maze.path.length - 1, correct: 0 };
     renderMazeGame();
     return;
   }
 
   const rounds = gamesData[gameKey].rounds;
-  activeGameState = { key: gameKey, stageId: stage.id, roundIndex: 0, correct: 0, total: rounds.length };
-  renderRoundGame();
+  activeGameState = { key: gameKey, stageId: stage.id, roundIndex: 0, correct: 0, total: rounds.length, builtLetters: [] };
+  if (gameKey === "missingLetter") {
+    renderWordBuildRound();
+    return;
+  }
+  renderChoiceRound();
 }
 
-function renderRoundGame() {
+function renderChoiceRound() {
   const game = gamesData[activeGameState.key];
   const round = game.rounds[activeGameState.roundIndex];
   gamesProgress.textContent = `סֶבֶב ${activeGameState.roundIndex + 1}/${activeGameState.total}`;
@@ -522,15 +543,7 @@ function renderRoundGame() {
         gamesText.textContent = `נִסָּיוֹן יָפֶה. הַתְּשׁוּבָה: ${round.options[round.correct]}`;
       }
       setTimeout(() => {
-        activeGameState.roundIndex += 1;
-        if (activeGameState.roundIndex < activeGameState.total) {
-          renderRoundGame();
-        } else {
-          const selectedTrack = getTrackState();
-          selectedTrack.data.correctAnswers += activeGameState.correct;
-          selectedTrack.data.stars += activeGameState.correct;
-          finishStage(activeGameState.total, activeGameState.correct);
-        }
+        goToNextGameRound();
       }, 900);
     });
     optionsWrap.appendChild(btn);
@@ -540,9 +553,84 @@ function renderRoundGame() {
   gamesArea.appendChild(optionsWrap);
 }
 
+function renderWordBuildRound() {
+  const game = gamesData.missingLetter;
+  const round = game.rounds[activeGameState.roundIndex];
+  const wordLetters = Array.from(round.word);
+
+  gamesProgress.textContent = `סֶבֶב ${activeGameState.roundIndex + 1}/${activeGameState.total}`;
+  gamesText.textContent = `בִּנוּ אֶת הַמִּלָּה לְפִי הָרֶמֶז: ${round.clue}`;
+
+  const slots = document.createElement("div");
+  slots.className = "word-slots";
+
+  for (let i = 0; i < wordLetters.length; i += 1) {
+    const slot = document.createElement("div");
+    slot.className = "word-slot";
+    slot.textContent = activeGameState.builtLetters[i] || "_";
+    slots.appendChild(slot);
+  }
+
+  const optionsWrap = document.createElement("div");
+  optionsWrap.className = "games-options";
+  const options = buildWordRoundOptions(round.word);
+
+  options.forEach((letter) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = letter;
+    btn.addEventListener("click", () => {
+      if (activeGameState.builtLetters.length >= wordLetters.length) return;
+      activeGameState.builtLetters.push(letter);
+      renderWordBuildRound();
+
+      if (activeGameState.builtLetters.length === wordLetters.length) {
+        const builtWord = activeGameState.builtLetters.join("");
+        const isCorrect = builtWord === round.word;
+
+        if (isCorrect) {
+          activeGameState.correct += 1;
+          gamesText.textContent = "כָּל הַכָּבוֹד! בָּנִיתָ מִלָּה נְכוֹנָה.";
+          showBurst(false);
+        } else {
+          gamesText.textContent = `נִסָּיוֹן יָפֶה. הַמִּלָּה הַנְּכוֹנָה: ${round.word}`;
+        }
+
+        setTimeout(() => {
+          goToNextGameRound();
+        }, 900);
+      }
+    });
+    optionsWrap.appendChild(btn);
+  });
+
+  gamesArea.innerHTML = "";
+  gamesArea.appendChild(slots);
+  gamesArea.appendChild(optionsWrap);
+}
+
+function goToNextGameRound() {
+  activeGameState.roundIndex += 1;
+  activeGameState.builtLetters = [];
+
+  if (activeGameState.roundIndex < activeGameState.total) {
+    if (activeGameState.key === "missingLetter") {
+      renderWordBuildRound();
+    } else {
+      renderChoiceRound();
+    }
+    return;
+  }
+
+  const selectedTrack = getTrackState();
+  selectedTrack.data.correctAnswers += activeGameState.correct;
+  selectedTrack.data.stars += activeGameState.correct;
+  finishStage(activeGameState.total, activeGameState.correct);
+}
+
 function renderMazeGame() {
   gamesProgress.textContent = `צַעַד ${activeGameState.step}/${activeGameState.total}`;
-  gamesText.textContent = "הַגִּיעוּ לַגָּבִיעַ עַל הַמַּסְלוּל הַצָּהֹב.";
+  gamesText.textContent = "לַחֲצוּ עַל הַמַּשְׁבֶּצֶת הַצְּהֻבָּה הַבָּאָה.";
 
   const board = document.createElement("div");
   board.className = "maze-board";
@@ -557,7 +645,7 @@ function renderMazeGame() {
         cell.classList.add("block");
       } else {
         cell.classList.add("path");
-        cell.textContent = String(pathIndex);
+        cell.textContent = "";
       }
 
       if (pathIndex === activeGameState.step) {
@@ -572,59 +660,43 @@ function renderMazeGame() {
         }
       }
 
+      if (pathIndex === activeGameState.step + 1) {
+        cell.classList.add("next");
+        cell.textContent = "⭐";
+        cell.addEventListener("click", () => handleMazeStep(pathIndex));
+      }
+
       board.appendChild(cell);
     }
   }
 
-  const controls = document.createElement("div");
-  controls.className = "maze-controls";
-
-  [
-    { label: "⬆️ לְמַעְלָה", dr: -1, dc: 0 },
-    { label: "⬇️ לְמַטָּה", dr: 1, dc: 0 },
-    { label: "⬅️ שְׂמֹאל", dr: 0, dc: -1 },
-    { label: "➡️ יָמִין", dr: 0, dc: 1 }
-  ].forEach((move) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.textContent = move.label;
-    btn.addEventListener("click", () => handleMazeMove(move.dr, move.dc));
-    controls.appendChild(btn);
-  });
-
   gamesArea.innerHTML = "";
   gamesArea.appendChild(board);
-  gamesArea.appendChild(controls);
 }
 
 function findPathIndex(row, col) {
   return gamesData.maze.path.findIndex(([r, c]) => r === row && c === col);
 }
 
-function handleMazeMove(dr, dc) {
-  const current = gamesData.maze.path[activeGameState.step];
-  const target = [current[0] + dr, current[1] + dc];
-  const nextStep = activeGameState.step + 1;
-  const expected = gamesData.maze.path[nextStep];
-
-  if (expected && target[0] === expected[0] && target[1] === expected[1]) {
-    activeGameState.step = nextStep;
-    activeGameState.moves += 1;
-    showBurst(false);
-
-    if (activeGameState.step === activeGameState.total) {
-      const selectedTrack = getTrackState();
-      selectedTrack.data.correctAnswers += activeGameState.total;
-      selectedTrack.data.stars += 5;
-      finishStage(activeGameState.total, activeGameState.total);
-      return;
-    }
-
-    renderMazeGame();
+function handleMazeStep(pathIndex) {
+  if (pathIndex !== activeGameState.step + 1) {
+    gamesText.textContent = "כִּמְעַט! נְנַסֶּה מַשְׁבֶּצֶת אַחֶרֶת.";
     return;
   }
 
-  gamesText.textContent = "כִּמְעַט! נְנַסֶּה כִּוּוּן אַחֵר.";
+  activeGameState.step = pathIndex;
+  activeGameState.correct += 1;
+  showBurst(false);
+
+  if (activeGameState.step === activeGameState.total) {
+    const selectedTrack = getTrackState();
+    selectedTrack.data.correctAnswers += activeGameState.correct;
+    selectedTrack.data.stars += 5;
+    finishStage(activeGameState.total, activeGameState.correct);
+    return;
+  }
+
+  renderMazeGame();
 }
 
 function showBurst(isBig) {
