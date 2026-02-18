@@ -543,14 +543,30 @@ function openGameStage(stage) {
   gamesArea.innerHTML = "";
 
   if (gameKey === "maze") {
-    activeGameState = { key: gameKey, stageId: stage.id, step: 0, total: gamesData.maze.path.length - 1, correct: 0 };
+    activeGameState = {
+      key: gameKey,
+      stageId: stage.id,
+      step: 0,
+      total: gamesData.maze.path.length - 1,
+      correct: 0,
+      decoys: buildMazeDecoys(5, 5, gamesData.maze.path.length)
+    };
     renderMazeGame();
     return;
   }
 
   const rounds = gamesData[gameKey].rounds;
-  activeGameState = { key: gameKey, stageId: stage.id, roundIndex: 0, correct: 0, total: rounds.length, builtLetters: [] };
+  activeGameState = {
+    key: gameKey,
+    stageId: stage.id,
+    roundIndex: 0,
+    correct: 0,
+    total: rounds.length,
+    builtLetters: [],
+    roundOptions: []
+  };
   if (gameKey === "missingLetter") {
+    setWordRoundOptions();
     renderWordBuildRound();
     return;
   }
@@ -615,7 +631,7 @@ function renderWordBuildRound() {
 
   const optionsWrap = document.createElement("div");
   optionsWrap.className = "games-options";
-  const options = buildWordRoundOptions(round.word);
+  const options = activeGameState.roundOptions;
 
   options.forEach((letter) => {
     const btn = document.createElement("button");
@@ -657,6 +673,7 @@ function goToNextGameRound() {
 
   if (activeGameState.roundIndex < activeGameState.total) {
     if (activeGameState.key === "missingLetter") {
+      setWordRoundOptions();
       renderWordBuildRound();
     } else {
       renderChoiceRound();
@@ -672,7 +689,7 @@ function goToNextGameRound() {
 
 function renderMazeGame() {
   gamesProgress.textContent = `צַעַד ${activeGameState.step}/${activeGameState.total}`;
-  gamesText.textContent = "לַחֲצוּ עַל הַמַּשְׁבֶּצֶת הַצְּהֻבָּה הַבָּאָה.";
+  gamesText.textContent = `לַחֲצוּ עַל הַמִּסְפָּר הַבָּא: ${activeGameState.step + 2}`;
 
   const board = document.createElement("div");
   board.className = "maze-board";
@@ -687,7 +704,7 @@ function renderMazeGame() {
         cell.classList.add("block");
       } else {
         cell.classList.add("path");
-        cell.textContent = "";
+        cell.textContent = String(pathIndex + 1);
       }
 
       if (pathIndex === activeGameState.step) {
@@ -697,16 +714,18 @@ function renderMazeGame() {
 
       if (pathIndex === activeGameState.total) {
         cell.classList.add("goal");
-        if (pathIndex !== activeGameState.step) {
+        if (pathIndex !== activeGameState.step && pathIndex !== activeGameState.step + 1) {
           cell.textContent = "🏆";
         }
       }
 
-      if (pathIndex === activeGameState.step + 1) {
-        cell.classList.add("next");
-        cell.textContent = "⭐";
-        cell.addEventListener("click", () => handleMazeStep(pathIndex));
+      if (pathIndex === -1) {
+        const key = `${r}-${c}`;
+        cell.classList.add("decoy");
+        cell.textContent = String(activeGameState.decoys[key]);
       }
+
+      cell.addEventListener("click", () => handleMazeStep(pathIndex));
 
       board.appendChild(cell);
     }
@@ -739,6 +758,22 @@ function handleMazeStep(pathIndex) {
   }
 
   renderMazeGame();
+}
+
+function setWordRoundOptions() {
+  const round = gamesData.missingLetter.rounds[activeGameState.roundIndex];
+  activeGameState.roundOptions = buildWordRoundOptions(round.word);
+}
+
+function buildMazeDecoys(rows, cols, maxNumber) {
+  const decoys = {};
+  for (let r = 0; r < rows; r += 1) {
+    for (let c = 0; c < cols; c += 1) {
+      const key = `${r}-${c}`;
+      decoys[key] = 1 + Math.floor(Math.random() * maxNumber);
+    }
+  }
+  return decoys;
 }
 
 function showBurst(isBig) {
