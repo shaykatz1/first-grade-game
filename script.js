@@ -701,28 +701,17 @@ function renderMazeGame() {
       cell.className = "maze-cell";
 
       if (pathIndex === -1) {
-        cell.classList.add("block");
+        cell.classList.add("maze-number");
+        const key = `${r}-${c}`;
+        cell.textContent = String(activeGameState.decoys[key]);
       } else {
-        cell.classList.add("path");
+        cell.classList.add("maze-number");
         cell.textContent = String(pathIndex + 1);
       }
 
       if (pathIndex === activeGameState.step) {
         cell.classList.add("player");
         cell.textContent = "😀";
-      }
-
-      if (pathIndex === activeGameState.total) {
-        cell.classList.add("goal");
-        if (pathIndex !== activeGameState.step && pathIndex !== activeGameState.step + 1) {
-          cell.textContent = "🏆";
-        }
-      }
-
-      if (pathIndex === -1) {
-        const key = `${r}-${c}`;
-        cell.classList.add("decoy");
-        cell.textContent = String(activeGameState.decoys[key]);
       }
 
       cell.addEventListener("click", () => handleMazeStep(pathIndex));

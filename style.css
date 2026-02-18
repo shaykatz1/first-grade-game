@@ -274,28 +274,15 @@ h3 {
   background: #fff;
 }
 
-.maze-cell.block {
-  background: #dfe6ee;
-}
-
-.maze-cell.path {
+.maze-cell.maze-number {
   background: #fff8d9;
+  border-color: #efd28d;
+  cursor: pointer;
 }
 
 .maze-cell.player {
   background: #b6f3d4;
   border-color: #22b573;
-}
-
-.maze-cell.goal {
-  background: #ffe6a9;
-  border-color: #f0b43c;
-}
-
-.maze-cell.next {
-  background: #fff2bd;
-  border-color: #f0b43c;
-  cursor: pointer;
 }
 
 .word-slots {
