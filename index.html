@@ -39,19 +39,17 @@
     </section>
 
     <section class="levels-panel">
-      <h2>בּוֹחֲרִים נוֹשֵׂא</h2>
-      <div class="track-switch" role="tablist" aria-label="בְּחִירַת נוֹשֵׂא">
-        <button id="trackLanguageBtn" class="track-btn active" type="button">שָׂפָה</button>
-        <button id="trackMathBtn" class="track-btn" type="button">חֶשְׁבּוֹן</button>
+      <div class="topic-header">
+        <h2 id="levelsTitle">שַׁלְבֵי שָׂפָה</h2>
+        <button id="changeTrackBtn" class="ghost-btn" type="button">הַחְלָפַת נוֹשֵׂא</button>
       </div>
-      <h3 id="levelsTitle">שַׁלְבֵי שָׂפָה</h3>
       <div id="levelsContainer" class="levels-grid"></div>
     </section>
 
     <section class="game-panel">
       <div id="welcomeCard" class="card">
         <h2>בְּרוּכִים הַבָּאִים</h2>
-        <p>בְּחֲרוּ נוֹשֵׂא וְשָׁלָב לְהַתְחָלָה.</p>
+        <p>בִּחֲרוּ שָׁלָב וְהַתְחִילוּ לְשַׂחֵק.</p>
       </div>
 
       <div id="questionCard" class="card hidden">
@@ -66,6 +64,27 @@
       </div>
     </section>
   </main>
+
+  <div id="trackChooser" class="overlay open" role="dialog" aria-modal="true" aria-label="בְּחִירַת נוֹשֵׂא">
+    <div class="overlay-card">
+      <h2>מָה נִתְרַגֵּל הַיּוֹם?</h2>
+      <p>בּוֹחֲרִים נוֹשֵׂא אֶחָד וּמִתְקַדְּמִים בּוֹ.</p>
+      <div class="overlay-actions">
+        <button id="chooseLanguageBtn" class="track-choice language" type="button">שָׂפָה</button>
+        <button id="chooseMathBtn" class="track-choice math" type="button">חֶשְׁבּוֹן</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="celebrationBurst" class="celebration-burst hidden" aria-hidden="true"></div>
+
+  <div id="milestoneModal" class="overlay" role="dialog" aria-modal="true" aria-label="הִשָּׂג">
+    <div class="overlay-card milestone">
+      <h2 id="milestoneTitle">הִשַּׂגְתָּ שָׁלָב!</h2>
+      <p id="milestoneText"></p>
+      <button id="closeMilestoneBtn" class="primary-btn" type="button">מַמְשִׁיכִים</button>
+    </div>
+  </div>
 
   <footer class="app-footer">
     <small>נִבְנָה בִּמְיוּחָד לְיַלְדֵי כִּתָּה א׳ • מַתְאִים לְמַחְשֵׁב וְלַנַּיָּד</small>
